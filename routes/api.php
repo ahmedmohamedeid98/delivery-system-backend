@@ -19,6 +19,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/login', [ApiAuthController::class, 'login'])->middleware(['cors', 'json.reponse']);
-Route::post('/register', [ApiAuthController::class, 'register'])->middleware(['cors', 'json.reponse']);
-Route::post('/logout', [ApiAuthController::class, 'register'])->middleware('auth:api');
+Route::post('/login', [ApiAuthController::class, 'login'])->middleware(['cors', 'json.response']);
+Route::post('/register', [ApiAuthController::class, 'register'])->middleware(['cors', 'json.response']);
+Route::post('/logout', [ApiAuthController::class, 'logout'])->middleware('auth');
