@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -21,9 +22,14 @@ class ApiAuthController extends Controller
         {
             return $this->failure($validator->errors()->all());
         }
-        $request['password']=Hash::make($request['password']);
-        $request['remember_token'] = Str::random(10);
-        $user = User::create($request->toArray());
+        try {
+
+            $request['password']=Hash::make($request['password']);
+            $request['remember_token'] = Str::random(10);
+            $user = User::create($request->toArray());
+        } catch(Exception $e) {
+            return $this->failure([$e->getMessage()]);
+        }
         return $this->successWithToken($user);
     }
 
