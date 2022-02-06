@@ -2,7 +2,11 @@
 
 namespace App\Exceptions;
 
+use Facade\FlareClient\Http\Exceptions\InvalidData;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
+use Mockery\Exception\InvalidOrderException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -35,7 +39,22 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
+            // Ahmed Eid Added This Code -> for test -> Delete it
+            if($e instanceof ValidationException) {
+                return response([
+                    "sd"=>"df",
+                    "success"=> false,
+                    "errors"=> [$e->getMessage()]
+                ], 422);
+            }
+            if($e instanceof AuthorizationException) {
+                return response([
+                    "success"=>false,
+                    "errors"=>["Unauthenticated."]
+                ], 401);
+            }
         });
+
+        
     }
 }

@@ -19,14 +19,12 @@ class ApiAuthController extends Controller
         ]);
         if ($validator->fails())
         {
-            return response(['errors'=>$validator->errors()->all()], 422);
+            return $this->failure($validator->errors()->all());
         }
         $request['password']=Hash::make($request['password']);
         $request['remember_token'] = Str::random(10);
         $user = User::create($request->toArray());
-        $token = $user->createToken('r-create-token')->accessToken;
-        $response = ['token' => $token];
-        return response($response, 200);
+        return $this->successWithToken($user);
     }
 
     public function login (Request $request) {
@@ -36,29 +34,37 @@ class ApiAuthController extends Controller
         ]);
         if ($validator->fails())
         {
-            return response(['errors'=>$validator->errors()->all()], 422);
+            return $this->failure($validator->errors()->all());
         }
         $user = User::where('email', $request->email)->first();
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
-                $token = $user->createToken('l-create-token')->accessToken;
-                $response = ['token' => $token];
-                // $response = ['token' => $user->token()];
-                return response($response, 200);
+                return $this->successWithToken($user);
             } else {
-                $response = ["message" => "Invalid email or password"];
-                return response($response, 422);
+                return $this->failure(['Invalid email or password']);
             }
         } else {
-            $response = ["message" =>'User does not exist'];
-            return response($response, 422);
+            return $this->failure(['User does not exist']);
         }
     }
 
     public function logout (Request $request) {
-        $token = $request->user()->token();
-        $token->revoke();
-        $response = ['message' => 'You have been successfully logged out!'];
-        return response($response, 200);
+        $allDevices = $request->only('all_devices');
+        $validator = Validator::make($allDevices, [
+            'all_devices' => ['required', 'boolean']
+        ]);
+
+        if ($validator->fails()) {
+            return $this->failure($validator->errors()->all());
+        }
+        if ($allDevices == true) {
+            $tokens = $request->user()->tokens();
+            foreach ($tokens as $token) {
+                $token->delete();
+            }
+            return $this->success('You have been successfully logged out from all devices!');
+        }
+        $request->user()->token()->delete();
+        return $this->success('You have been successfully logged out!');
     }
 }
