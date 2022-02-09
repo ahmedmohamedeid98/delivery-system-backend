@@ -40,19 +40,7 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             // Ahmed Eid Added This Code -> for test -> Delete it
-            if($e instanceof ValidationException) {
-                return response([
-                    "sd"=>"df",
-                    "success"=> false,
-                    "errors"=> [$e->getMessage()]
-                ], 422);
-            }
-            if($e instanceof AuthorizationException) {
-                return response([
-                    "success"=>false,
-                    "errors"=>["Unauthenticated."]
-                ], 401);
-            }
+           
         });
 
         
