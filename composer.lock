@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "4adb1626bb5b440c5ecda8b3f02528d2",
+    "content-hash": "5741c33ac081eed274fdfdcbcea92d0b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2790,6 +2790,54 @@
                 "source": "https://github.com/paragonie/random_compat"
             },
             "time": "2020-10-15T08:29:30+00:00"
+        },
+        {
+            "name": "paytabscom/laravel_paytabs",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/paytabscom/paytabs-php-laravel-package.git",
+                "reference": "6451cf26c5947d9aed076b15fe2d7bcfde04a30f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/paytabscom/paytabs-php-laravel-package/zipball/6451cf26c5947d9aed076b15fe2d7bcfde04a30f",
+                "reference": "6451cf26c5947d9aed076b15fe2d7bcfde04a30f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.0|^8.0"
+            },
+            "default-branch": true,
+            "type": "composer-package",
+            "autoload": {
+                "psr-4": {
+                    "Paytabscom\\Laravel_paytabs\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Walaa Elsaeed",
+                    "email": "w.elsaeed@paytabs.com"
+                }
+            ],
+            "description": "Official laravel package to implement PayTabs integration with laravel apps",
+            "homepage": "https://site.paytabs.com/en/",
+            "keywords": [
+                "E-comerce",
+                "laravel",
+                "payments",
+                "paytabs"
+            ],
+            "support": {
+                "issues": "https://github.com/paytabscom/paytabs-php-laravel-package/issues",
+                "source": "https://github.com/paytabscom/paytabs-php-laravel-package/tree/master"
+            },
+            "time": "2021-12-08T11:01:34+00:00"
         },
         {
             "name": "php-http/message-factory",
@@ -8810,7 +8858,9 @@
     ],
     "aliases": [],
     "minimum-stability": "dev",
-    "stability-flags": [],
+    "stability-flags": {
+        "paytabscom/laravel_paytabs": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
