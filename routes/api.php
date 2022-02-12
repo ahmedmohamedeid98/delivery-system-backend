@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\Route;
 
 // Payment Gateway
 Route::post('pay', [PayTabsGatewayController::class, 'index']);//->middleware('auth:api');
-Route::get('payment/callback', [PayTabsGatewayController::class, 'callback']);
+Route::post('payment/callback', [PayTabsGatewayController::class, 'callback']);
 
 // user
 Route::get('user', [ApiUserController::class, 'index'])->middleware(['auth:api','json.response']);
