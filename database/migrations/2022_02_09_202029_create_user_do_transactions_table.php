@@ -14,8 +14,8 @@ class CreateUserDoTransactionsTable extends Migration
     public function up()
     {
         Schema::create('user_do_transactions', function (Blueprint $table) {
-            $table->foreignId('transaction_id')->primary()->references('id')->on('transactions');
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('transaction_id')->primary()->references('id')->on('transactions')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

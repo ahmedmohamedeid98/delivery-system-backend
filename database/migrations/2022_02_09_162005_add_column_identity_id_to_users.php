@@ -14,7 +14,7 @@ class AddColumnIdentityIdToUsers extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->foreignId('identity_id')->nullable()->constrained('identities', 'id');
+            $table->foreignId('identity_id')->nullable()->constrained('identities', 'id')->onDelete('cascade');
         });
     }
 
@@ -26,6 +26,7 @@ class AddColumnIdentityIdToUsers extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
+            $table->dropForeign(['identity_id']);
             $table->dropColumn('identity_id');
         });
     }

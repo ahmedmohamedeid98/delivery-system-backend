@@ -13,19 +13,30 @@ class CreateTransactionsTable extends Migration
      */
     public function up()
     {
+        /*
+        'trans_ref', 
+        'trans_amount', 
+        'trans_currency', 
+        'trans_desc',
+        'res_status', 
+        'res_msg', 
+        'trans_time',
+        'payment_method', 
+        'payment_card', 
+        'ipn_trace'
+        */
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('payment_id');
-            $table->bigInteger('invoice_id');
-            $table->float('invoice_value');
-            $table->tinyInteger('type'); // 0->buy-connects, 1->pay for task
-            $table->string('invoice_status');
-            $table->string('invoice_reference');
-            $table->string('expiry_date');
-            $table->string("expire_time");
-            $table->string("paid_currency");
-            $table->string("card_number");
-            $table->string("payment_gateway");
+            $table->string('trans_ref');
+            $table->string('trans_amount');
+            $table->string('trans_currency');
+            $table->string('trans_desc');
+            $table->string('res_status', 5);
+            $table->string('res_msg');
+            $table->string('trans_time');
+            $table->string('payment_method');
+            $table->string("payment_card");
+            $table->string("ipn_trace");
             $table->timestamps();
         });
     }
