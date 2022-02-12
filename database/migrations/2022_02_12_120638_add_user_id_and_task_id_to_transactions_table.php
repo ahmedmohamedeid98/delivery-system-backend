@@ -16,7 +16,6 @@ class AddUserIdAndTaskIdToTransactionsTable extends Migration
         Schema::table('transactions', function (Blueprint $table) {
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreignId('task_id')->nullable()->references('id')->on('tasks')->onDelete('cascade');
-            $table->string('trans_type', 20);
             $table->enum('trans_type', ['connects', 'order', 'service', 'refund']);
         });
     }
