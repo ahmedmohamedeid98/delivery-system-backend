@@ -27,11 +27,11 @@ class CreateTransactionsTable extends Migration
         */
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
-            $table->string('trans_ref');
-            $table->string('trans_amount');
-            $table->string('trans_currency');
-            $table->string('trans_desc');
-            $table->string('res_status', 5);
+            $table->string('trans_ref')->nullable();
+            $table->string('trans_amount')->nullable();
+            $table->string('trans_currency')->nullable();
+            $table->string('trans_desc')->nullable();
+            $table->string('res_status', 5)->nullable();
             $table->string('res_msg')->nullable();
             $table->string('trans_time')->nullable();
             $table->string('payment_method')->nullable();
