@@ -4,7 +4,7 @@ use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\Auth\ApiSocialAuthController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
-
+use App\Http\Controllers\PayTabsGatewayController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -18,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
+
+// Payment Gateway
+Route::post('pay', [PayTabsGatewayController::class, 'index'])->middleware('auth:api');
+Route::get('payment/callback', [PayTabsGatewayController::class, 'callback']);
 
 // user
 Route::get('user', [ApiUserController::class, 'index'])->middleware(['auth:api','json.response']);
