@@ -55,14 +55,14 @@ class PayTabsGatewayController extends Controller
     public function callback(Request $request)
     {
         $rules = [
-          'trans_ref'=> 'bail|required',
+          'tran_ref'=> 'bail|required',
           'payment_result' => 'bail|required',
-          'payment_result.response_status' => 'bail|in:A,H',
+          'payment_result.response_status' => 'bail|required|in:A,H',
           'customer_details' => 'bail|required',
           'customer_details.ip' => 'bail|required',
           'cart_id'=> 'required',
           'payment_result' => 'required',
-          'payment_info' => 'payment_info',
+          'payment_info' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -75,7 +75,7 @@ class PayTabsGatewayController extends Controller
 
 
         $user_id = +$request['cart_description']; // We sent user_id instead of cart description
-        $task_id = +$request['cart_id'];
+        $task_id = +$request['cart_id'] == 54841545415 ? null : +$request['cart_id'] ;
         $trans_reference = $request['tran_ref'];
         $trans_amount = $request['tran_total'];
         $trans_currency = $request['tran_currency'];
