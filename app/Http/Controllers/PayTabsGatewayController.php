@@ -38,6 +38,6 @@ class PayTabsGatewayController extends Controller
 
     public function callback(Request $request)
     {
-        return $request;
+        print_r($request);
     }
 }
