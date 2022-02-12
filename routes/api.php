@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 // Payment Gateway
-Route::post('pay', [PayTabsGatewayController::class, 'index']);//->middleware('auth:api');
+Route::post('pay', [PayTabsGatewayController::class, 'index'])->middleware('auth:api');
 Route::post('payment/callback', [PayTabsGatewayController::class, 'callback']);
 
 // user

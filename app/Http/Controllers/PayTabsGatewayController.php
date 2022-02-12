@@ -19,7 +19,7 @@ class PayTabsGatewayController extends Controller
       $data = $request->all();
       $rules = [
         'trans_type' => 'required|string|in:connects,order,service,refund',
-        'amount' => 'required|integer',
+        'amount' => 'required|integer|in:50,120,200',
       ];
 
       if(isset($data['trans_type']) && $data['trans_type'] != 'connects') {
@@ -42,13 +42,14 @@ class PayTabsGatewayController extends Controller
        * we store user_id instead of `ip` cause we need the id later
        */
       $paymentPage = paypage::sendPaymentCode('all') ->sendTransaction('sale')
-        ->sendCart($data['task_id'],$data['amount'],$data['description'])
-        ->sendCustomerDetails($user->name, $user->email, '', 'test', 'city', 'state', 'EG', '1234',$user->id)
+        ->sendCart($data['task_id'],$data['amount'],strval($user->id))
+        ->sendCustomerDetails($user->name, $user->email, '', '', '', '', 'EG', '1234',"")
         ->sendHideShipping(true)
         ->sendURLs(env('paytabs_return'), env('paytabs_callback')) 
         ->sendLanguage('en') 
+        ->sendFramed(true)
         ->create_pay_page(); 
-        return $paymentPage; 
+        return ["payment_url" => $paymentPage];
     }
 
     public function callback(Request $request)
@@ -73,12 +74,12 @@ class PayTabsGatewayController extends Controller
         }
 
 
-        $user_id = +$request['customer_details']['ip'];
-        $task_id = $request['cart_id'];
+        $user_id = +$request['cart_description']; // We sent user_id instead of cart description
+        $task_id = +$request['cart_id'];
         $trans_reference = $request['tran_ref'];
         $trans_amount = $request['tran_total'];
         $trans_currency = $request['tran_currency'];
-        $trans_desc = $request['cart_description'];
+        $trans_desc = '';
         $paymentResult = $request['payment_result'];
         $responseStatus = $paymentResult['response_status'];
         $responseMessage = $paymentResult['response_message'];
