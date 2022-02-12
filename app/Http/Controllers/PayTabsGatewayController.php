@@ -2,49 +2,139 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transaction;
+use Exception;
 use Illuminate\Http\Request;
-use Paytabscom\Laravel_paytabs\Facades\paypage; 
+use Illuminate\Support\Facades\Auth;
+use Paytabscom\Laravel_paytabs\Facades\paypage;
+use Illuminate\Support\Facades\Validator;
+
 
 class PayTabsGatewayController extends Controller
 {
     public function index(Request $request)
     {
-        $data = [
-            "cart_id" => 10,
-            "cart_amount" => 20,
-            "cart_description" => "buy connects",
-            "name"=> "Ahmed Eid",
-            "email" => "ahmed@gmail.com",
-            "phone" => "0102221545",
-            "user_id" => '5',
 
-        ];
+      $user = Auth::user();
+      $data = $request->all();
+      $rules = [
+        'trans_type' => 'required|string|in:connects,order,service,refund',
+        'amount' => 'required|integer',
+      ];
 
-        $paymentPage = paypage::sendPaymentCode('all') 
+      if(isset($data['trans_type']) && $data['trans_type'] != 'connects') {
+        $rules['task_id'] = 'required|exists:tasks';
+      } else {
+        $data['task_id'] = 54841545415; // any non valid task_id;
+      }
 
-         ->sendTransaction('sale') // [auth, sale, refund, void, capture]
+      $validator = Validator::make($data, $rules);
 
-         ->sendCart($data['cart_id'],$data['cart_amount'],$data['cart_description'])  // CartID, Amount, CartDescription
-
-         ->sendCustomerDetails($data['name'], $data['email'], $data['phone'], 'test', 'Nasr City', 'Cairo', 'EG', '1234',$data['user_id'])
-         // we store user_id instead of `ip` cause we need the id later  
-
-         ->sendHideShipping(true)
-
-         ->sendURLs(env('paytabs_return'), env('paytabs_callback')) 
-         // paytabs_return: a page paytabs service calls it after finishing payment operation 
-         // paytabs_callback: link paytabs service calls it after finishing payment operation
-         ->sendLanguage('en') 
-
-         ->create_pay_page(); 
-
+      if(!$validator) {
+        return $this->failure($validator->errors()->all());
+      }
+      
+      /**
+       * sendTransaction: auth, sale, refund, void, capture
+       * sendCart: CartID, Amount, CartDescription
+       * paytabs_return: a page paytabs service calls it after finishing payment operation
+       * paytabs_callback: link paytabs service calls it after finishing payment operation
+       * we store user_id instead of `ip` cause we need the id later
+       */
+      $paymentPage = paypage::sendPaymentCode('all') ->sendTransaction('sale')
+        ->sendCart($data['task_id'],$data['amount'],$data['description'])
+        ->sendCustomerDetails($user->name, $user->email, '', 'test', 'city', 'state', 'EG', '1234',$user->id)
+        ->sendHideShipping(true)
+        ->sendURLs(env('paytabs_return'), env('paytabs_callback')) 
+        ->sendLanguage('en') 
+        ->create_pay_page(); 
         return $paymentPage; 
     }
 
     public function callback(Request $request)
     {
-        /*
+        $rules = [
+          'trans_ref'=> 'bail|required',
+          'payment_result' => 'bail|required',
+          'payment_result.response_status' => 'bail|in:A,H',
+          'customer_details' => 'bail|required',
+          'customer_details.ip' => 'bail|required',
+          'cart_id'=> 'required',
+          'payment_result' => 'required',
+          'payment_info' => 'payment_info',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails())
         {
+            print_r($validator->errors()->all());
+            return; // return $this->failure($validator->errors()->all());
+        }
+
+
+        $user_id = +$request['customer_details']['ip'];
+        $task_id = $request['cart_id'];
+        $trans_reference = $request['tran_ref'];
+        $trans_amount = $request['tran_total'];
+        $trans_currency = $request['tran_currency'];
+        $trans_desc = $request['cart_description'];
+        $paymentResult = $request['payment_result'];
+        $responseStatus = $paymentResult['response_status'];
+        $responseMessage = $paymentResult['response_message'];
+        $trasactionTime = $paymentResult['transaction_time'];
+        $paymentInfo = $request['payment_info'];
+        $payment_method = $paymentInfo['payment_method'];
+        $paymentCard = $paymentInfo['payment_description'];
+        $ipn_trace = $request['ipn_trace'];
+
+        try {
+            Transaction::create([
+                'user_id' => $user_id,
+                'task_id' => $task_id,
+                'trans_ref' => $trans_reference,
+                'trans_amount'=> $trans_amount,
+                'trans_currency' => $trans_currency,
+                'trans_desc'=> $trans_desc,
+                'res_status' => $responseStatus,
+                'res_msg' => $responseMessage,
+                'trans_time'=> $trasactionTime,
+                'payment_method' => $payment_method,
+                'payment_card' => $paymentCard,
+                'ipn_trace' => $ipn_trace,
+            ]);
+        } catch (Exception $e) {
+          printf($e->getMessage());
+      }
+        
+    }
+
+
+    public function listTransactions(Request $request)
+    {
+      // return Transaction::where();
+    }
+
+    public function refund(Request $request)
+    {
+        # code... client ask to refund his money
+        # if client B not do the job in the time client A can refund the money
+        # after two days
+    }
+}
+
+/*
+response_status
+A	Authorized
+H	Hold (Authorised but on hold for further anti-fraud review)
+P	Pending (for refunds)
+V	Voided
+E	Error
+D	Declined
+ */
+
+/*
+{
   "tran_ref": "TST2204301053491",
   "merchant_id": 37871,
   "profile_id": 89644,
@@ -83,38 +173,6 @@ class PayTabsGatewayController extends Controller
     "expiryMonth": 2,
     "expiryYear": 2022
   },
-  "ipn_trace": "IPNS0003.62070C12.00004269"
-}
-        */
-        
-        $trans_reference = $request['tran_ref'];
-        $trans_amount = $request['tran_total'];
-        $trans_currency = $request['tran_currency'];
-        $trans_desc = $request['cart_description'];
-        
-        $paymentResult = $request['payment_result'];
-        $responseStatus = $paymentResult['response_status'];
-        $responseMessage = $paymentResult['response_message'];
-        $trasactionTime = $paymentResult['transaction_time'];
-        //[trans_ref, trans_amount, trans_currency, trans_desc, res_status, res_msg, trans_time,
-        // payment_method, payment_card, ipn_trace]
-        
-        $paymentInfo = $request['payment_info'];
-        $payment_method = $paymentInfo['payment_method'];
-        $paymentCard = $paymentInfo['payment_description'];
-        
-        $ipn_trace = $request['ipn_trace'];
-
-        if($responseStatus == 'A') {
-            
-        }
-    }
-
-
-    public function refund(Request $request)
-    {
-        # code... client ask to refund his money
-        # if client B not do the job in the time client A can refund the money
-        # after two days
-    }
-}
+    "ipn_trace": "IPNS0003.62070C12.00004269"
+  }
+*/

@@ -32,11 +32,11 @@ class CreateTransactionsTable extends Migration
             $table->string('trans_currency');
             $table->string('trans_desc');
             $table->string('res_status', 5);
-            $table->string('res_msg');
-            $table->string('trans_time');
-            $table->string('payment_method');
-            $table->string("payment_card");
-            $table->string("ipn_trace");
+            $table->string('res_msg')->nullable();
+            $table->string('trans_time')->nullable();
+            $table->string('payment_method')->nullable();
+            $table->string("payment_card")->nullable();
+            $table->string("ipn_trace")->nullable();
             $table->timestamps();
         });
     }

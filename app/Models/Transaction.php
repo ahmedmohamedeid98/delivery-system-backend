@@ -16,9 +16,12 @@ class Transaction extends Model
      */
     protected $fillable = [
         'trans_ref', 
+        'user_id',
+        'task_id',
         'trans_amount', 
         'trans_currency', 
         'trans_desc',
+        'trans_type',
         'res_status', 
         'res_msg', 
         'trans_time',
@@ -26,5 +29,7 @@ class Transaction extends Model
         'payment_card', 
         'ipn_trace'
     ];
+
+    
 
 }
