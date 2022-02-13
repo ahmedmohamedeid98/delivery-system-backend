@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserDoTransactionsTable extends Migration
+class AddUserIdAndTaskIdToTransactionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,10 @@ class CreateUserDoTransactionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_do_transactions', function (Blueprint $table) {
-            $table->foreignId('transaction_id')->primary()->references('id')->on('transactions')->onDelete('cascade');
+        Schema::table('transactions', function (Blueprint $table) {
             $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->timestamps();
+            $table->foreignId('task_id')->nullable()->references('id')->on('tasks')->onDelete('cascade');
+            $table->enum('trans_type', ['connects', 'order', 'service', 'both', 'refund']);
         });
     }
 
@@ -27,6 +27,8 @@ class CreateUserDoTransactionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_do_transactions');
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->dropIfExists('transactions');
+        });
     }
 }

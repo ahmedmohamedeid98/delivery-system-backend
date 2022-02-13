@@ -14,10 +14,12 @@ class CreateUserRequestTasksTable extends Migration
     public function up()
     {
         Schema::create('user_request_tasks', function (Blueprint $table) {
-            $table->foreignId('task_id')->references('id')->on('tasks');
-            $table->foreignId('user_id')->references('id')->on('users');
+            $table->foreignId('task_id')->references('id')->on('tasks')->onDelete('cascade');
+            $table->foreignId('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->primary(['user_id', 'task_id']);
             $table->tinyInteger('approve_status');
+            $table->integer('bid');
+            $table->text('letter');
             $table->timestamps();
         });
     }
