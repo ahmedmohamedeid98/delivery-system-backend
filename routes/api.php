@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\Auth\ApiSocialAuthController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\IdentityController;
+use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PayTabsGatewayController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
@@ -21,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('tasks', [TaskController::class, 'index']);
+Route::get('task/list', [TaskController::class, 'index'])->middleware('auth:api');
 Route::post('task', [TaskController::class, 'create'])->middleware('auth:api');
 
 // Payment Gateway
@@ -45,6 +46,7 @@ Route::post('password/forget', [ForgetPasswordController::class, 'forget']);
 Route::post('password/reset', [ForgetPasswordController::class, 'reset']);
 
 Route::post('identity/images', [IdentityController::class, 'create'])->middleware('auth:api');
+Route::get('location/target', [LocationController::class, 'getTargetLocations'])->middleware('auth:api');
 
 
 
@@ -65,10 +67,9 @@ Route::post('identity/images', [IdentityController::class, 'create'])->middlewar
 
 
 
-
-
-
-
+Route::get('location/delivery', [LocationController::class, 'getDeliveryLocations'])->middleware('auth:api');
+Route::post('location/target', [LocationController::class, 'createTargetLocation'])->middleware('auth:api');
+Route::post('location/delivery', [LocationController::class, 'createDeliveryLocation'])->middleware('auth:api');
 
 
 
