@@ -4,6 +4,7 @@ use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\Auth\ApiSocialAuthController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
+use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\PayTabsGatewayController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
@@ -42,3 +43,78 @@ Route::post('logout', [ApiAuthController::class, 'logout'])->middleware(['auth:a
 // reset
 Route::post('password/forget', [ForgetPasswordController::class, 'forget']);
 Route::post('password/reset', [ForgetPasswordController::class, 'reset']);
+
+Route::post('identity/images', [IdentityController::class, 'create'])->middleware('auth:api');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// end
