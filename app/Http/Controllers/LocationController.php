@@ -45,7 +45,7 @@ class LocationController extends Controller
             'user_id' => $user_id,
             'delivery_location_id' => $location->id,
         ]);
-        return $this->success('delivery location add successfully!');
+        return $this->success('delivery location add successfully!', $location);
     }
 
     public function createTargetLocation(CreateLocationRequest $request)
@@ -56,6 +56,6 @@ class LocationController extends Controller
             'user_id' => $user_id,
             'target_location_id' => $location->id,
         ]);
-        return $this->success('target location add successfully!');
+        return $this->success('target location add successfully!', $location);
     }
 }
