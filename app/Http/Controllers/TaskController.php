@@ -33,7 +33,7 @@ class TaskController extends Controller
                 'order_cost' => $task['order_cost'],
                 'payment_method' => $task['payment_method'],
                 'required_invoice' => $task['required_invoice'],
-                'note' => $task['note'],
+                'note' => isset($task['note']) ? $task['note'] : '',
                 'delivery_date' => $task['delivery_date'],
                 'delivery_location_id' => $task['delivery_location_id'],
                 'target_location_id' => $task['target_location_id'],
