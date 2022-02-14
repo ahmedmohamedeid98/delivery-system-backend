@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Identity;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -10,6 +11,21 @@ use Illuminate\Support\Facades\Auth;
 
 class IdentityController extends Controller
 {
+
+    public function canUpload()
+    {
+        $user_id = Auth::user()->id;
+        $user = User::find($user_id);
+        $identity_status = Profile::find($user_id)->identity_status;
+        if ($user->identity_id != null && $identity_status == 0) {
+            return response(['can-upload' => false, 'reason' => 'your identities already in review process, we will notify you soon!']);
+        }
+        if ($user->identity_id != null && $identity_status == 1) {
+            return response(['can-upload' => false, 'reason' => 'you are verified successfully!']);
+        }
+        return response(['can-upload' => true, 'reason' => 'you need to verify your identity']);
+    }
+
     public function create(Request $request)
     {
         $user_id = Auth::user()->id;
@@ -17,6 +33,7 @@ class IdentityController extends Controller
         $backPicture = null;
         $selfyPicture = null;
         if ($request->hasFile('front_image')) {
+            // return response(['hasFile' => 'front']);
             $frontPicture = $this->store($request->file('front_image'));
         }
         if ($request->hasFile('back_image')) {
@@ -26,7 +43,7 @@ class IdentityController extends Controller
             $selfyPicture = $this->store($request->file('selfy_image'));
         }
 
-        return response(['frontPicture' => $frontPicture, 'backPicture' =>  $backPicture, 'selfyPicture' => $selfyPicture]);
+        // return response(['frontPicture' => $frontPicture, 'backPicture' =>  $backPicture, 'selfyPicture' => $selfyPicture]);
 
         if ($frontPicture && $backPicture && $selfyPicture) {
             $identity = Identity::create([
@@ -39,16 +56,14 @@ class IdentityController extends Controller
             if (isset($identity_id)) {
                 Identity::where('id', $identity_id)->delete();
             }
-            $c =  $identity->id();
-
-            $user->identity_id = $identity->id();
+            $user->identity_id = $identity->id;
             $user->save();
             return $this->success(
                 'Identity Images Uploaded Succesfully, We will approve it soon!',
-                ['user_id' => $user_id, 'new_identity_id' => $c]
+                ['user_id' => $user_id, 'new_identity_id' => $identity->id]
             );
         } else {
-            return  $this->failure(['invalid data']);
+            return  ['invalid data', $request->header()];
         }
     }
 
