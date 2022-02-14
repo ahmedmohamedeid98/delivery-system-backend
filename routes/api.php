@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\ApiSocialAuthController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\PayTabsGatewayController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -45,6 +46,10 @@ Route::post('password/forget', [ForgetPasswordController::class, 'forget']);
 Route::post('password/reset', [ForgetPasswordController::class, 'reset']);
 
 Route::post('identity/images', [IdentityController::class, 'create'])->middleware('auth:api');
+
+// profile
+Route::get('user/profile', [ProfileController::class, 'show'])->middleware('auth:api');
+Route::post('user/edit-profile', [ProfileController::class, 'edit'])->middleware('auth:api');
 
 
 
