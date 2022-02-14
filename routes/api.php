@@ -1,10 +1,12 @@
 <?php
 
 use App\Http\Controllers\ApiUserController;
+use App\Http\Controllers\ApplyOnTaskController;
 use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\Auth\ApiSocialAuthController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
 use App\Http\Controllers\IdentityController;
+use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PayTabsGatewayController;
 use App\Http\Controllers\TaskController;
@@ -70,8 +72,12 @@ Route::get('location/target', [LocationController::class, 'getTargetLocations'])
 Route::get('location/delivery', [LocationController::class, 'getDeliveryLocations'])->middleware('auth:api');
 Route::post('location/target', [LocationController::class, 'createTargetLocation'])->middleware('auth:api');
 Route::post('location/delivery', [LocationController::class, 'createDeliveryLocation'])->middleware('auth:api');
-
-
+Route::get('task/can-apply', [ApplyOnTaskController::class, 'canApply'])->middleware('auth:api');
+Route::post('task/apply', [ApplyOnTaskController::class, 'apply'])->middleware('auth:api');
+Route::post('task/offers{task_id?}', [ApplyOnTaskController::class, 'offersOnTask'])->middleware('auth:api');
+Route::post('interview/select', [InterviewController::class, 'select'])->middleware('auth:api');
+Route::get('interview/candidates{task_id?}', [InterviewController::class, 'candidates'])->middleware('auth:api');
+Route::post('interview/approve', [InterviewController::class, 'approve'])->middleware('auth:api');
 
 
 
