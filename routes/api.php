@@ -5,6 +5,7 @@ use App\Http\Controllers\ApplyOnTaskController;
 use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\Auth\ApiSocialAuthController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LocationController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -83,7 +85,7 @@ Route::post('interview/select', [InterviewController::class, 'select'])->middlew
 Route::get('interview/candidates{task_id?}', [InterviewController::class, 'candidates'])->middleware('auth:api');
 Route::post('interview/approve', [InterviewController::class, 'approve'])->middleware('auth:api');
 
-
+Route::get('task/me', [DashboardController::class, 'getMyTasks'])->middleware('auth:api');
 
 
 
