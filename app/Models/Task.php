@@ -14,6 +14,12 @@ class Task extends Model
      *
      * @var array<int, string>
      */
+
+    public function deliveryLocation()
+    {
+        return $this->belongsTo(DeliveryLocation::class);
+    }
+
     protected $fillable = [
         'title',
         'task_status',

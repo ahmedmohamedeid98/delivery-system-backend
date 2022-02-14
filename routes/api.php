@@ -25,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('task/list', [TaskController::class, 'index'])->middleware('auth:api');
+Route::get('task/list{countries?}{cities?}', [TaskController::class, 'index'])->middleware('auth:api');
 Route::post('task', [TaskController::class, 'create'])->middleware('auth:api');
 
 // Payment Gateway

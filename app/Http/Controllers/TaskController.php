@@ -12,20 +12,36 @@ use App\Models\Task;
 use App\Models\User;
 use App\Models\UserRequestTask;
 use Exception;
+use Facade\Ignition\QueryRecorder\Query;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+use function PHPSTORM_META\map;
+
 class TaskController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $tasks = Task::get();
-        $tasks_count = count($tasks);
-        $tasks_details = [];
-        for ($i = 0; $i < $tasks_count; $i++) {
-            array_push($tasks_details, ['task' => new TaskResource($tasks[$i]), 'delivery_location' => DeliveryLocation::find($tasks[$i]->delivery_location_id)]);
-        }
-        return $this->success('success', $tasks_details);
+        // $tasks = Task::with('deliveryLocation')->where('task_status', 1)->get();
+        // return $tasks->where('delivery_location.state', 'Qena');
+
+        // $deliveryLocations = DeliveryLocation::when($request->countries, function ($query, $countries) {
+        //     return $query->where('country', 'in', $countries);
+        // })->when($request->cities, function ($query, $cities) {
+        //     return $query->where('city', 'in', $cities);
+        // })->get();
+        // return $this->success('success', $deliveryLocations);
+
+
+
+
+        $tasks = Task::with('deliveryLocation')->get();
+        // $tasks_count = count($tasks);
+        // $tasks_details = [];
+        // for ($i = 0; $i < $tasks_count; $i++) {
+        //     array_push($tasks_details, ['task' => new TaskResource($tasks[$i]), 'delivery_location' => DeliveryLocation::find($tasks[$i]->delivery_location_id)]);
+        // }
+        return $this->success('success', $tasks);
     }
 
     public function create(CreateTaskRequest $request)

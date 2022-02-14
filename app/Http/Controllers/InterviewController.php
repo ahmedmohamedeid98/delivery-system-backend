@@ -61,8 +61,15 @@ class InterviewController extends Controller
             DB::transaction(function () use ($data) {
                 $offer = UserRequestTask::find(['task_id' => $data['task_id'], 'user_id' => $data['user_id']]);
                 if ($offer->approve_status == 1) {
+                    // 1. choose one to do the task
                     $offer->update(['approve_status' => 2]);
+                    $offer->save();
+                    // 2. delete others
                     UserRequestTask::where('task_id', $data['task_id'])->where('approve_status', '!=', 2)->delete();
+                    // 3. move task from open to inprogress
+                    $task = Task::find($data['task_id']);
+                    $task->task_status = 2;
+                    $task->save();
                 } else {
                     return $this->failure(["Failure, this user is not from candidates!"]);
                 }
