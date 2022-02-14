@@ -32,7 +32,7 @@ class CreateTaskRequest extends FormRequest
             'order_cost' => ['nullable', 'integer'],
             'payment_method' => ['required', 'integer', Rule::in([1, 2])],
             'required_invoice' => ['required', 'boolean'],
-            'note' => ['required', 'string'],
+            'note' => ['nullable', 'string'],
             'order_status' => ['nullable', 'integer', Rule::in([0, 1, 2, 3])],
             'travel_status' => ['nullable', 'integer', Rule::in([0, 1, 2, 3])],
             'delivery_date' => ['required', 'date'],
@@ -44,3 +44,23 @@ class CreateTaskRequest extends FormRequest
         ];
     }
 }
+
+/*
+title,task_status,description,budget,payment_method,required_invoice,delivery_date,delivery_location_id,target_location_id
+note,
+            'task_status',
+            'description',
+            'budget',
+            'order_cost',
+            'payment_method',
+            'required_invoice',
+            'note',
+            'order_status',
+            'travel_status',
+            'delivery_date',
+            'delivery_location_id',
+            'target_location_id',
+            'paid_service' => ['nullable', 'integer'],
+            'paid_order' => ['nullable', 'integer'],
+            'paid_both' => 
+*/

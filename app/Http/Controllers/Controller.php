@@ -13,31 +13,32 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function success(string $message, $data=null)
+    public function success(string $message, $data = null)
     {
-        $res = ["success"=>true, "message"=>$message];
-        if($data) {
+        $res = ["success" => true, "message" => $message];
+        if ($data) {
             $res["data"] = $data;
         }
         return response($res, 200);
     }
 
-    public function successWithToken(User $user) {
+    public function successWithToken(User $user)
+    {
         $token = $user->createToken('o-l-create-token');
         return response([
-            "success"=>true,
-            "message"=>'login successfully',
-            "token"=>$token->accessToken,
-            "token_expires_at"=>$token->token->expires_at, 
-            "user"=>new UserResource($user)
+            "success" => true,
+            "message" => 'login successfully',
+            "token" => $token->accessToken,
+            "token_expires_at" => $token->token->expires_at,
+            "user" => new UserResource($user)
         ], 200);
     }
 
     public function failure(array $errors)
     {
         return response([
-            'success'=>false,
-            'errors'=>$errors,
+            'success' => false,
+            'errors' => $errors,
         ], 422);
     }
 }

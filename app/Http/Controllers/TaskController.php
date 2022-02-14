@@ -2,9 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ApplyTaskRequest;
 use App\Http\Requests\CreateTaskRequest;
+use App\Http\Resources\TaskOfferResource;
 use App\Http\Resources\TaskResource;
+use App\Http\Resources\UserResource;
 use App\Models\Task;
+use App\Models\User;
+use App\Models\UserRequestTask;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -30,10 +35,10 @@ class TaskController extends Controller
                 'travel_status' => 0, // by default not-start
                 'description' => $task['description'],
                 'budget' => $task['budget'],
-                'order_cost' => $task['order_cost'],
+                'order_cost' => isset($task['order_cost']) ? $task['order_cost'] : 0,
                 'payment_method' => $task['payment_method'],
                 'required_invoice' => $task['required_invoice'],
-                'note' => $task['note'],
+                'note' => isset($task['note']) ? $task['note'] : '',
                 'delivery_date' => $task['delivery_date'],
                 'delivery_location_id' => $task['delivery_location_id'],
                 'target_location_id' => $task['target_location_id'],
