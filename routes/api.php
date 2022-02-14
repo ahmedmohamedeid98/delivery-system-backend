@@ -9,6 +9,7 @@ use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PayTabsGatewayController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,6 +50,9 @@ Route::post('password/reset', [ForgetPasswordController::class, 'reset']);
 
 Route::post('identity/images', [IdentityController::class, 'create'])->middleware('auth:api');
 
+// profile
+Route::get('user/profile', [ProfileController::class, 'show'])->middleware('auth:api');
+Route::post('user/edit-profile', [ProfileController::class, 'edit'])->middleware('auth:api');
 
 
 
@@ -78,6 +82,8 @@ Route::post('task/offers{task_id?}', [ApplyOnTaskController::class, 'offersOnTas
 Route::post('interview/select', [InterviewController::class, 'select'])->middleware('auth:api');
 Route::get('interview/candidates{task_id?}', [InterviewController::class, 'candidates'])->middleware('auth:api');
 Route::post('interview/approve', [InterviewController::class, 'approve'])->middleware('auth:api');
+
+
 
 
 
