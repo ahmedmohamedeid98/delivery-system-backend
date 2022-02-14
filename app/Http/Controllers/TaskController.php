@@ -7,6 +7,7 @@ use App\Http\Requests\CreateTaskRequest;
 use App\Http\Resources\TaskOfferResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserResource;
+use App\Models\DeliveryLocation;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\UserRequestTask;
@@ -19,7 +20,12 @@ class TaskController extends Controller
     public function index()
     {
         $tasks = Task::get();
-        return $this->success('success', TaskResource::collection($tasks));
+        $tasks_count = count($tasks);
+        $tasks_details = [];
+        for ($i = 0; $i < $tasks_count; $i++) {
+            array_push($tasks_details, ['task' => new TaskResource($tasks[$i]), 'delivery_location' => DeliveryLocation::find($tasks[$i]->delivery_location_id)]);
+        }
+        return $this->success('success', $tasks_details);
     }
 
     public function create(CreateTaskRequest $request)
