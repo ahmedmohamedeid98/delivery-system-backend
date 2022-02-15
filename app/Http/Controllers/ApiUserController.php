@@ -9,12 +9,24 @@ use App\Models\Profile;
 use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ApiUserController extends Controller
 {
     public function index(Request $request)
     {
         return new UserResource($request->user());
+    }
+
+    public function getConnects()
+    {
+        $user_id = Auth::user()->id;
+        try {
+            $profile = Profile::find($user_id);
+            return $this->success('get connects successfully', ['connects' => $profile->connects]);
+        } catch (Exception $e) {
+            return $this->failure([$e->getMessage()]);
+        }
     }
 
     public function about(Request $request)

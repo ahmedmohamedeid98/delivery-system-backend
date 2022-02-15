@@ -87,7 +87,7 @@ Route::get('interview/candidates{task_id?}', [InterviewController::class, 'candi
 Route::post('interview/approve', [InterviewController::class, 'approve'])->middleware('auth:api');
 
 Route::get('task/me', [DashboardController::class, 'getMyTasks'])->middleware('auth:api');
-
+Route::get('user/connects', [ApiUserController::class, 'getConnects'])->middleware("auth:api");
 
 
 

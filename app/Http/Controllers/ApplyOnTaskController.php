@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ApplyTaskRequest;
 use App\Http\Resources\TaskOfferResource;
 use App\Http\Resources\UserResource;
+use App\Models\Profile;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\UserRequestTask;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class ApplyOnTaskController extends Controller
 {
@@ -31,7 +33,12 @@ class ApplyOnTaskController extends Controller
             return response(['can_apply' => false, 'status' => 1, 'reason' => "you already applied to this task"], 200);
         }
 
-        return response(['can_apply' => true, 'status' => 2, 'reason' => "you can apply to this task"]);
+        $connects = Profile::find($user_id)->connects;
+        if (!$connects || $connects < 2) {
+            return response(['can_apply' => false, 'status' => 2, 'reason' => "you not have enough connects"], 200);
+        }
+
+        return response(['can_apply' => true, 'status' => 3, 'reason' => "you can apply to this task"]);
     }
 
 
@@ -39,20 +46,28 @@ class ApplyOnTaskController extends Controller
     {
         $user_id = Auth::user()->id;
         $data = $request->all();
-        $tasks = Task::where('user_id', $user_id)->where('task_id', $data['task_id'])->get();
+        $tasks = Task::where('user_id', $user_id)->where('id', $data['task_id'])->get();
         if ($tasks && count($tasks) > 0) {
             return $this->failure(["can not apply, you are the task's owner"]);
         }
 
-
+        $isAlreadyApplied = UserRequestTask::find(["user_id" => $user_id, "task_id" => $data['task_id']]);
+        if ($isAlreadyApplied) {
+            return $this->failure(["can not apply again, you are already applied"]);
+        }
         try {
-            UserRequestTask::create([
-                'user_id' => $user_id,
-                'task_id' => $data['task_id'],
-                'approve_status' => 0,
-                'bid' => $data['bid'],
-                'letter' => $data['letter'],
-            ]);
+            DB::transaction(function () use ($user_id, $data) {
+                $profile = Profile::find($user_id);
+                $profile->connects = $profile->connects - 2;
+                UserRequestTask::create([
+                    'user_id' => $user_id,
+                    'task_id' => $data['task_id'],
+                    'approve_status' => 0,
+                    'bid' => $data['bid'],
+                    'letter' => $data['letter'],
+                ]);
+                $profile->save();
+            });
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }

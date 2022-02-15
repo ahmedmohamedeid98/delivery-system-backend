@@ -20,6 +20,7 @@ class AboutUserResource extends JsonResource
             "state" => $this->state,
             "city" => $this->city,
             "phone" => $this->phone,
+            "connects" => $this->connects,
             "total_rate" => $this->total_rate,
             "success_rate" => $this->success_rate,
             "earning_amount" => $this->earning_amount,
