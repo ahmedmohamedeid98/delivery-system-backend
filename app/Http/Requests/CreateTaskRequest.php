@@ -26,7 +26,7 @@ class CreateTaskRequest extends FormRequest
     {
         return [
             'title' => ['bail', 'required', 'string', 'max:255'],
-            'task_status' => ['required', Rule::in([1, 2, 3])],
+            // 'task_status' => ['nullable', Rule::in([1, 2, 3])],
             'description' => ['required', 'string', 'max:1200'],
             'budget' => ['required', 'integer'],
             'order_cost' => ['nullable', 'integer'],
