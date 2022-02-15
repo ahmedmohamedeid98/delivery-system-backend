@@ -14,32 +14,37 @@ use Illuminate\Support\Facades\Auth;
 
 class ApplyOnTaskController extends Controller
 {
-    public function canApply()
+    public function canApply(Request $request)
     {
+        $task_id = $request->query('task_id');
+        if (!$task_id || !is_numeric($task_id)) {
+            return $this->failure(['invalid task id']);
+        }
         $user_id = Auth::user()->id;
-        $tasks = Task::where('user_id', $user_id)->get();
+        $tasks = Task::where('user_id', $user_id)->where('id', $task_id)->get();
         if ($tasks && count($tasks) > 0) {
-            return response(['can_apply' => false, 'reason' => "you are the task's owner"], 200);
+            return response(['can_apply' => false, 'status' => 0, 'reason' => "you are the task's owner"], 200);
         }
 
-        $requestTask = UserRequestTask::where('user_id', $user_id)->get();
-        if ($requestTask && count($requestTask) > 0) {
-            return response(['can_apply' => false, 'reason' => "you already applied to this task"], 200);
+        $requestTask = UserRequestTask::find(["user_id" => $user_id, "task_id" => $task_id]);
+        if ($requestTask) {
+            return response(['can_apply' => false, 'status' => 1, 'reason' => "you already applied to this task"], 200);
         }
 
-        return response(['can_apply' => true, 'reason' => "you can apply to this task"]);
+        return response(['can_apply' => true, 'status' => 2, 'reason' => "you can apply to this task"]);
     }
 
 
     public function apply(ApplyTaskRequest $request)
     {
         $user_id = Auth::user()->id;
-        $tasks = Task::where('user_id', $user_id)->get();
+        $data = $request->all();
+        $tasks = Task::where('user_id', $user_id)->where('task_id', $data['task_id'])->get();
         if ($tasks && count($tasks) > 0) {
             return $this->failure(["can not apply, you are the task's owner"]);
         }
 
-        $data = $request->all();
+
         try {
             UserRequestTask::create([
                 'user_id' => $user_id,

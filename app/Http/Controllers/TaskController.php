@@ -35,13 +35,19 @@ class TaskController extends Controller
 
 
 
-        $tasks = Task::with('deliveryLocation')->get();
+        $tasks = Task::with('deliveryLocation')
+            ->where('task_status', 1)
+            ->get();
+        $tks = $tasks->when($request->countries, function ($query, $countries) {
+
+            return $query->where('delivery_location.country', 'in', $countries);
+        });
         // $tasks_count = count($tasks);
         // $tasks_details = [];
         // for ($i = 0; $i < $tasks_count; $i++) {
         //     array_push($tasks_details, ['task' => new TaskResource($tasks[$i]), 'delivery_location' => DeliveryLocation::find($tasks[$i]->delivery_location_id)]);
         // }
-        return $this->success('success', $tasks);
+        return $this->success('success', $tks);
     }
 
     public function create(CreateTaskRequest $request)

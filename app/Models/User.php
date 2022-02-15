@@ -9,7 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Notifications\ResetPasswordNotification;
-
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -50,12 +50,17 @@ class User extends Authenticatable
 
     public function sendPasswordResetNotification($token)
     {
-        $url = "http://localhost:4200/reset-password?token=" . $token;
+        $url = "http://localhost:4200/user/reset-password?token=" . $token;
         $this->notify(new ResetPasswordNotification($url));
     }
 
     public function addedTargetLocations()
     {
         return $this->hasMany(AddedTargetLocation::class);
+    }
+
+    public function human_readable_date()
+    { //dddd Do of MMMM YYYY h:mm:ss A
+        return Carbon::parse($this->attributes['created_at'])->isoFormat("Do of MMMM YYYY");
     }
 }
