@@ -74,7 +74,7 @@ class InterviewController extends Controller
                     UserRequestTask::where('task_id', $data['task_id'])->where('approve_status', '!=', 2)->delete();
                     // 3. move task from open to inprogress
                     $task = Task::find($data['task_id']);
-                    $task->task_status = 2;
+                    $task->task_status = 1;
                     $task->save();
                 } else {
                     return $this->failure(["Failure, this user is not from candidates!"]);

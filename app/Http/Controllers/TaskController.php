@@ -60,7 +60,7 @@ class TaskController extends Controller
             $task = Task::create([
                 'user_id' => $user_id,
                 'title' => $task['title'],
-                'task_status' => 1, // by default open
+                'task_status' => 0, // by default open
                 'order_status' => 0, // by default not-begin
                 'travel_status' => 0, // by default not-start
                 'description' => $task['description'],
