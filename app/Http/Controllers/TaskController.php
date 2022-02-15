@@ -22,37 +22,33 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        // $tasks = Task::with('deliveryLocation')->where('task_status', 1)->get();
-        // return $tasks->where('delivery_location.state', 'Qena');
 
-        // $deliveryLocations = DeliveryLocation::when($request->countries, function ($query, $countries) {
-        //     return $query->where('country', 'in', $countries);
-        // })->when($request->cities, function ($query, $cities) {
-        //     return $query->where('city', 'in', $cities);
-        // })->get();
-        // return $this->success('success', $deliveryLocations);
+        $countries = null;
+        $states = null;
+        $cities = null;
 
+        if ($request->query('state')) {
+            $states = explode(',', $request->query('state'));
+        }
+        if ($request->query('city')) {
+            $cities = explode(',', $request->query('city'));
+        }
+        if ($request->query('country')) {
+            $countries = explode(',', $request->query('country'));
+        }
 
-
-
-        $tasks = Task::with('deliveryLocation')
-            ->where('task_status', 1)
-            ->get();
-        // $tasks_count = count($tasks);
-        // $results = [];
-        // for ($i = 0; $i < $tasks_count; $i++) {
-        //     return $tasks[$i]->delivery_location();
-        //     $city = $tasks[$i]['delivery_location']->city;
-        //     if (in_array($city, $request->countries)) {
-        //         array_push($results, $tasks[$i]);
-        //     }
-        // }
-
-        // $tasks_count = count($tasks);
-        // $tasks_details = [];
-        // for ($i = 0; $i < $tasks_count; $i++) {
-        //     array_push($tasks_details, ['task' => new TaskResource($tasks[$i]), 'delivery_location' => DeliveryLocation::find($tasks[$i]->delivery_location_id)]);
-        // }
+        $tasks = Task::with('deliveryLocation')->whereHas('deliveryLocation', function ($query) use ($states, $countries, $cities) {
+            if ($countries) {
+                $query->whereIn('country', $countries);
+            }
+            if ($states) {
+                $query->whereIn('state', $states);
+            }
+            if ($cities) {
+                $query->whereIn('state', $states);
+            }
+            return $query;
+        })->orderByDesc('created_at')->get();
         return $this->success('success', $tasks);
     }
 
