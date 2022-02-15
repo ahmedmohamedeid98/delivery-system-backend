@@ -19,7 +19,13 @@ class InterviewController extends Controller
     {
         $data = $request->all();
         try {
-            UserRequestTask::find(['task_id' => $data['task_id'], 'user_id' => $data['user_id']])->update(['approve_status' => 1]);
+            $offer =  UserRequestTask::find(['task_id' => $data['task_id'], 'user_id' => $data['user_id']]);
+            if ($offer) {
+                $offer->update(['approve_status' => 1]);
+                $offer->save();
+            } else {
+                return $this->failure(['not exist primary key [user_id, task_id]']);
+            }
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
