@@ -11,6 +11,7 @@ use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PayTabsGatewayController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\StaticDataController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -56,7 +57,7 @@ Route::get('identity/can-upload', [IdentityController::class, 'canUpload'])->mid
 // profile
 Route::get('user/profile', [ProfileController::class, 'show'])->middleware('auth:api');
 Route::post('user/edit-profile', [ProfileController::class, 'edit'])->middleware('auth:api');
-
+Route::get('location/data', [StaticDataController::class, 'getGovernorate'])->middleware('auth:api');
 
 
 
