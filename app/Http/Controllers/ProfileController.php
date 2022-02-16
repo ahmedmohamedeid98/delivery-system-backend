@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProfileRequest;
 use App\Models\User;
 use App\Models\Profile;
 use Illuminate\Http\Request;
@@ -32,4 +33,15 @@ class ProfileController extends Controller
         return [new ProfileResource($profile),new UserResource($user)];
 
     }
+
+    public function showAnotherUser(ProfileRequest $req)
+  {
+      $user_id = $req->query('id');
+
+
+      $post = Profile::with('user')->where('user_id', $user_id)->get()->first();
+      $user = User::where('id', $user_id)->get()->first();
+
+      return [new ProfileResource($post),new UserResource($user)];
+  }
 }
