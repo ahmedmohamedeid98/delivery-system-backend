@@ -55,6 +55,7 @@ Route::post('password/reset', [ForgetPasswordController::class, 'reset']);
 Route::post('identity/images', [IdentityController::class, 'create'])->middleware('auth:api');
 Route::get('identity/can-upload', [IdentityController::class, 'canUpload'])->middleware('auth:api');
 // profile
+Route::get('user/showProfile{id?}', [ProfileController::class, 'showAnotherUser'])->middleware('auth:api');
 Route::get('user/profile', [ProfileController::class, 'show'])->middleware('auth:api');
 Route::post('user/edit-profile', [ProfileController::class, 'edit'])->middleware('auth:api');
 Route::get('location/data', [StaticDataController::class, 'getGovernorate'])->middleware('auth:api');
