@@ -16,7 +16,9 @@ class TaskOfferResource extends JsonResource
     {
         return [
             'bid' => $this->bid,
-            'letter' => $this->letter
+            'letter' => $this->letter,
+            'created_at' => $this->updated_at,
+            'updated_at' => $this->created_at
         ];
     }
 }

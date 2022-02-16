@@ -23,6 +23,8 @@ class UserRequestTask extends Model
         'user_id',
         'approve_status',
         'bid',
-        'letter'
+        'letter',
+        'created_at',
+        'updated_at'
     ];
 }
