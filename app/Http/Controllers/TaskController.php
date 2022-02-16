@@ -48,7 +48,7 @@ class TaskController extends Controller
                 $query->whereIn('state', $states);
             }
             return $query;
-        })->orderByDesc('created_at')->get();
+        })->where('task_status', 0)->orderByDesc('created_at')->get();
         return $this->success('success', $tasks);
     }
 
