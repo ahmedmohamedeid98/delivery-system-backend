@@ -45,7 +45,7 @@ class TaskController extends Controller
                 $query->whereIn('state', $states);
             }
             if ($cities) {
-                $query->whereIn('state', $states);
+                $query->whereIn('city', $cities);
             }
             return $query;
         })->where('task_status', 0)->orderByDesc('created_at')->get();
