@@ -89,9 +89,8 @@ Route::post('interview/approve', [InterviewController::class, 'approve'])->middl
 
 Route::get('task/me', [DashboardController::class, 'getMyTasks'])->middleware('auth:api');
 Route::get('user/connects', [ApiUserController::class, 'getConnects'])->middleware("auth:api");
-
-
-
+Route::get('feedback', [DashboardController::class, 'getFeedback'])->middleware('auth:api');
+Route::post('feedback', [DashboardController::class, 'addFeedback'])->middleware('auth:api');
 
 
 
