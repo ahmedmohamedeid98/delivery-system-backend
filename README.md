@@ -32,7 +32,7 @@ The REST API to the eDelivery system is described below.
     }
 ### body
     {
-        "reciver_id": 1,
+        "reciver_id": 3,
         "task_id": 5,
         "rate": 4.5,
         "content": "Ali is a great man..."
