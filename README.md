@@ -7,60 +7,88 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## About Laravel
+## About eDelivery
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+# REST API
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+The REST API to the eDelivery system is described below.
 
-## Learning Laravel
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## Feedback
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+- add feedback after task competed .
+- get all your feedback added by others.
+### Request (Create)
+`POST /feeback`
 
-## Laravel Sponsors
+    - https://ds-marketplace-api.herokuapp.com/api/feedback
+    - http://localhost:8000/api/feedback
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Header
+    {
+        "Authorization": "token is required"
+    }
+### body
+    {
+        "reciver_id": 3,
+        "task_id": 5,
+        "rate": 4.5,
+        "content": "Ali is a great man..."
+    }
+### Success Response
 
-### Premium Partners
+    {
+        "success": true,
+        "message": "feedback added successfully!",
+        "data": {
+            "sender_id": 1,
+            "reciver_id": 3,
+            "task_id": 1,
+            "rate": "4.5",
+            "content": "this user is amazing",
+            "updated_at": "2022-02-16T14:08:27.000000Z",
+            "created_at": "2022-02-16T14:08:27.000000Z"
+        }
+    }
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[CMS Max](https://www.cmsmax.com/)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
-- **[Romega Software](https://romegasoftware.com)**
+### Failure Response
 
-## Contributing
+    {
+        "success": false,
+        "errors": [
+            "you already add feedback for client who complete this task"
+        ]
+    }
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Request (fetch)
+`Get /feeback`
 
-## Code of Conduct
+    - https://ds-marketplace-api.herokuapp.com/api/feedback
+    - http://localhost:8000/api/feedback
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Header
+    {
+        "Authorization": "token is required"
+    }
+### Response
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+    {
+        "success": true,
+        "message": "get all your feedbacks successfully",
+        "data": [
+            {
+                "sender_id": 1,
+                "reciver_id": 3,
+                "task_id": 1,
+                "rate": 4.5,
+                "content": "this user is amazing",
+                "created_at": "2022-02-16T14:08:27.000000Z",
+                "updated_at": "2022-02-16T14:08:27.000000Z"
+            },
+            {
+                ...
+            }
+        ]
+    }
