@@ -8,6 +8,8 @@ use App\Http\Resources\TaskOfferResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserResource;
 use App\Models\DeliveryLocation;
+use App\Models\Profile;
+use App\Models\TargetLocation;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\UserRequestTask;
@@ -22,6 +24,11 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
+        $user_id = Auth::user()->id;
+        $profile = Profile::find($user_id);
+        if (!$profile) {
+            return $this->failure(["we need your address to find nearest task for you, please complete your profile"]);
+        }
 
         $countries = null;
         $states = null;
@@ -41,7 +48,9 @@ class TaskController extends Controller
         if ($request->query('budget')) {
             $budget_classes = explode(',', $request->query('budget'));
         }
-        $tasks = Task::with('deliveryLocation')->whereHas('deliveryLocation', function ($query) use ($states, $countries, $cities) {
+        // Return Only Open Tasks
+        $tasks = Task::where('task_status', 0)->with(['deliveryLocation', 'targetLocation'])->whereHas('deliveryLocation', function ($query) use ($states, $countries, $cities) {
+            // Fiter based on Deliver Location
             if ($countries) {
                 $query->whereIn('country', $countries);
             }
@@ -52,7 +61,11 @@ class TaskController extends Controller
                 $query->whereIn('city', $cities);
             }
             return $query;
-        })->where('task_status', 0)->where(function ($query) use ($budget_classes) {
+        })->whereHas('targetLocation', function ($query) use ($profile) {
+            // Returen Tasks nearst to user location
+            return $query->where('country', $profile->country)->where('state', $profile->state)->where('city', $profile->city);
+        })->where(function ($query) use ($budget_classes) {
+            // Filter Task Based On Budget
             foreach ($budget_classes as $b_class) {
                 if ($b_class == 'a') {
                     $query->orwhere('budget', '<', 50);
@@ -69,7 +82,7 @@ class TaskController extends Controller
             }
         })->orderByDesc('created_at')->get();
 
-        return $this->success('success', $tasks);
+        return $this->success('success', TaskResource::collection($tasks));
     }
 
     public function create(CreateTaskRequest $request)
@@ -97,5 +110,10 @@ class TaskController extends Controller
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
+    }
+
+    private function getTargetLocationIds($country, $state, $city)
+    {
+        return TargetLocation::where("country", $country)->where("state", $state)->where('city', $city)->get('id');
     }
 }

@@ -20,6 +20,11 @@ class Task extends Model
         return $this->belongsTo(DeliveryLocation::class);
     }
 
+    public function targetLocation()
+    {
+        return $this->belongsTo(TargetLocation::class);
+    }
+
     protected $fillable = [
         'title',
         'task_status',
