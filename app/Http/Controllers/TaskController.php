@@ -26,6 +26,7 @@ class TaskController extends Controller
         $countries = null;
         $states = null;
         $cities = null;
+        $budget_classes = [];
 
         if ($request->query('state')) {
             $states = explode(',', $request->query('state'));
@@ -37,6 +38,9 @@ class TaskController extends Controller
             $countries = explode(',', $request->query('country'));
         }
 
+        if ($request->query('budget')) {
+            $budget_classes = explode(',', $request->query('budget'));
+        }
         $tasks = Task::with('deliveryLocation')->whereHas('deliveryLocation', function ($query) use ($states, $countries, $cities) {
             if ($countries) {
                 $query->whereIn('country', $countries);
@@ -48,7 +52,23 @@ class TaskController extends Controller
                 $query->whereIn('city', $cities);
             }
             return $query;
-        })->where('task_status', 0)->orderByDesc('created_at')->get();
+        })->where('task_status', 0)->where(function ($query) use ($budget_classes) {
+            foreach ($budget_classes as $b_class) {
+                if ($b_class == 'a') {
+                    $query->orwhere('budget', '<', 50);
+                }
+                if ($b_class == 'b') {
+                    $query->orWhereBetween('budget', [50, 100]);
+                }
+                if ($b_class == 'c') {
+                    $query->orWhereBetween('budget', [100, 200]);
+                }
+                if ($b_class == 'd') {
+                    $query->orWhere('budget', '>', 200);
+                }
+            }
+        })->orderByDesc('created_at')->get();
+
         return $this->success('success', $tasks);
     }
 

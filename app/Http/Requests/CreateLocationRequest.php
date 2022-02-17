@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests;
 
+use App\Models\City;
+use App\Models\Governorate;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -26,14 +28,16 @@ class CreateLocationRequest extends FormRequest
     {
         return [
             "country" => ["required", 'string', Rule::in(['Egypt'])],
-            "state" => ['required', 'string', Rule::in([
-                'Alexandria',
-                'Aswan', 'Asyut', 'Beheira', 'Beni Suef', 'Cairo', 'Dakahlia',
-                'Damietta', 'Faiyum', 'Gharbia', 'Giza', 'Ismailia', 'Kafr El-Sheikh', 'Luxor',
-                'Matrouh', 'Minya', 'Monufia', 'New Valley', 'North Sinai', 'Port Said',
-                'Qalyubia', 'Qena', 'Red Sea', 'Sharqia', 'Sohag', 'South Sinai', 'Suez'
-            ])],
-            "city" => ['required', 'string', 'max:30'],
+            "state" => ['required', 'string', function ($attr, $val, $fail) {
+                if (count(Governorate::where('governorate_name_en', $val)->get()) == 0) {
+                    $fail('The ' . $attr . ' is invalid.');
+                }
+            }],
+            "city" => ['required', 'string', function ($attr, $val, $fail) {
+                if (count(City::where('city_name_en', $val)->get()) == 0) {
+                    $fail('The ' . $attr . ' is invalid.');
+                }
+            }],
             "streat" => ['required', 'string', 'max:190'],
             "address_note" => ['nullable', 'string', 'max:255'],
             // "longitude" => "nullable|regex:/^\d+(\.\d{1,2})?$/",
