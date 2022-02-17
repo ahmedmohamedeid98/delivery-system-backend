@@ -15,6 +15,52 @@ Laravel is a web application framework with expressive, elegant syntax. We belie
 
 The REST API to the eDelivery system is described below.
 
+## Profile
+
+### Address (GET)
+`GET user/address`
+
+### Header
+    {
+        "Authorization": "token"
+    }
+
+### Response (status_code = 200)
+    {
+    "success": true,
+    "message": "get address successfully",
+    "data": {
+        "country": "Egypt",
+        "state": "Ismailia",
+        "city": "Salam"
+    }
+
+}
+
+### Address (POST)
+`POST user/address`
+
+### Header
+    {
+        "Authorization": "token"
+    }
+### Body
+    {
+        "country": "Egypt",
+        "state": "Cairo",
+        "city": "Giza",
+    }
+### Response
+    {
+        "success": true,
+        "message": "update address successfully",
+        "data": {
+            "country": "Egypt",
+            "state": "Cairo",
+            "city": "non-valid city"
+        }
+    }
+
 
 ## Feedback
 
