@@ -35,6 +35,7 @@ class ProfileController extends Controller
         $profile->state = $req->state;
         $profile->city = $req->city;
         $profile->phone = $req->phone;
+        $profile->about = $req->about;
         $user->name = $req->name;
         $user->email = $req->email;
         $profile->save();
