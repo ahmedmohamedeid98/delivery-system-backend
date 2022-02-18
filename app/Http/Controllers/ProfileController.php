@@ -30,12 +30,12 @@ class ProfileController extends Controller
         if ($profile) {
             $data[] = new ProfileResource($profile);
         } else {
-            $data[] = [];
+            $data[] = null;
         }
         if ($user) {
             $data[] = new UserResource($user);
         } else {
-            $data[] = [];
+            $data[] = null;
         }
 
         return $data;
@@ -44,17 +44,38 @@ class ProfileController extends Controller
     {
         $user = User::find(Auth::user()->id);
         $profile = Profile::find(Auth::user()->id);
-        $profile->gender = $req->gender;
-        //$profile->user_id = $req->user_id;
-        $profile->state = $req->state;
-        $profile->city = $req->city;
-        $profile->phone = $req->phone;
-        $profile->about = $req->about;
-        $user->name = $req->name;
-        $user->email = $req->email;
-        $profile->save();
-        $user->save();
-        return [new ProfileResource($profile), new UserResource($user)];
+        if (!$profile) {
+            try {
+                $profile = Profile::create([
+                    'about' => $req->about,
+                    'gender' => $req->gender,
+                    'country' => $req->country,
+                    'state' => $req->state,
+                    'city' => $req->city,
+                    'phone' => $req->phone,
+                ]);
+            } catch (Exception $e) {
+                return $this->failure([$e->getMessage()]);
+            }
+            return [new ProfileResource($profile), new UserResource($user)];
+        } else {
+            try {
+                DB::transaction(function () use ($profile, $user, $req) {
+                    $profile->gender = $req->gender;
+                    $profile->state = $req->state;
+                    $profile->city = $req->city;
+                    $profile->country = $req->country;
+                    $profile->phone = $req->phone;
+                    $profile->about = $req->about;
+                    $user->name = $req->name;
+                    $profile->save();
+                    $user->save();
+                });
+                return [new ProfileResource($profile), new UserResource($user)];
+            } catch (Exception $e) {
+                return $this->failure([$e->getMessage()]);
+            }
+        }
     }
 
     public function showAnotherUser(ProfileRequest $req)
