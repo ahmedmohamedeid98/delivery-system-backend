@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\UserResource;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -25,10 +26,12 @@ class Controller extends BaseController
     public function successWithToken(User $user)
     {
         $token = $user->createToken('o-l-create-token');
+        $hasAddress = $this->hasAddress($user->id);
         return response([
             "success" => true,
             "message" => 'login successfully',
             "token" => $token->accessToken,
+            "has_address" => $hasAddress,
             "token_expires_at" => $token->token->expires_at,
             "user" => new UserResource($user)
         ], 200);
@@ -40,5 +43,12 @@ class Controller extends BaseController
             'success' => false,
             'errors' => $errors,
         ], 422);
+    }
+
+    public function hasAddress($user_id)
+    {
+        $profile = Profile::find($user_id);
+        if ($profile && $profile->country && $profile->state && $profile->city) return true;
+        return false;
     }
 }

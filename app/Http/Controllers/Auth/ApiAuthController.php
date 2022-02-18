@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Profile;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
@@ -12,34 +13,34 @@ use Illuminate\Support\Str;
 
 class ApiAuthController extends Controller
 {
-    public function register (Request $request) {
+    public function register(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return $this->failure($validator->errors()->all());
         }
         try {
 
-            $request['password']=Hash::make($request['password']);
+            $request['password'] = Hash::make($request['password']);
             $request['remember_token'] = Str::random(10);
             $user = User::create($request->toArray());
-        } catch(Exception $e) {
+        } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
         return $this->successWithToken($user);
     }
 
-    public function login (Request $request) {
+    public function login(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'email' => 'required|string|email|max:255',
             'password' => 'required|string|min:8',
         ]);
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return $this->failure($validator->errors()->all());
         }
         $user = User::where('email', $request->email)->first();
@@ -54,7 +55,8 @@ class ApiAuthController extends Controller
         }
     }
 
-    public function logout (Request $request) {
+    public function logout(Request $request)
+    {
         $allDevices = $request->only('all_devices');
         $validator = Validator::make($allDevices, [
             'all_devices' => ['required', 'boolean']
