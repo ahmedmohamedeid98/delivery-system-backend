@@ -24,10 +24,12 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
+        $per_page = 1;
+        $page = $request->query('page') ?? 1;
         $user_id = Auth::user()->id;
         $profile = Profile::find($user_id);
         if (!$profile) {
-            return $this->failure(["we need your address to find nearest task for you, please complete your profile"]);
+            return $this->failure(["we need your address to find nearest tasks for you, please complete your profile"]);
         }
 
         $countries = null;
@@ -80,9 +82,12 @@ class TaskController extends Controller
                     $query->orWhere('budget', '>', 200);
                 }
             }
-        })->orderByDesc('created_at')->get();
-
-        return $this->success('success', TaskResource::collection($tasks));
+        })->orderByDesc('created_at')->paginate(1)->withQueryString(); //paginate($per_page, ['*'], 'page', $page);
+        //TaskResource::collection($tasks)->response()->getData(true)
+        // return $this->success('success', ["tasks" => TaskResource::collection($tasks->items()), "paginate" => $tasks['links']]);
+        // return $this->success('success', $tasks);
+        $paginatorData = TaskResource::collection($tasks)->response()->getData();
+        return $this->success('success', ["tasks" => $paginatorData->data, "paginate" => $paginatorData->meta]);
     }
 
     public function create(CreateTaskRequest $request)

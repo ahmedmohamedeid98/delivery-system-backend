@@ -44,7 +44,7 @@ class TaskResource extends JsonResource
                 "address_note" => $this->deliveryLocation->address_note,
                 "longitude" => $this->deliveryLocation->longitude,
                 "latitude" => $this->deliveryLocation->latitude,
-            ]
+            ],
         ];
     }
     /*
