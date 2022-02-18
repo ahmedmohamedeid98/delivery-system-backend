@@ -94,6 +94,10 @@ class ProfileController extends Controller
         $user_id = Auth::user()->id;
         try {
             $profile = Profile::find($user_id);
+            if (!$profile) {
+                return $this->failure(['Please complete your profile address, to enable us to find tasks nearby to your address
+                ']);
+            }
             return $this->success("get address successfully", new UserAddressResource($profile));
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
