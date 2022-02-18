@@ -22,9 +22,23 @@ class ProfileController extends Controller
     public function show()
     {
         $id = Auth::user()->id;
-        $post = Profile::find($id);
+        $profile = Profile::find($id);
         $user = User::find($id);
-        return [new ProfileResource($post), new UserResource($user)];
+        // $profile = Profile::with('user')->where('user_id', $id)->get()->first();
+        // return $profile;
+        $data = [];
+        if ($profile) {
+            $data[] = new ProfileResource($profile);
+        } else {
+            $data[] = [];
+        }
+        if ($user) {
+            $data[] = new UserResource($user);
+        } else {
+            $data[] = [];
+        }
+
+        return $data;
     }
     public function edit(Request $req)
     {
