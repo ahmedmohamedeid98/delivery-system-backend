@@ -4,10 +4,10 @@ namespace App\Http\Requests;
 
 use App\Models\City;
 use App\Models\Governorate;
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class CreateLocationRequest extends FormRequest
+class CreateTargetLocationRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -33,15 +33,13 @@ class CreateLocationRequest extends FormRequest
                     $fail('The ' . $attr . ' is invalid.');
                 }
             }],
-            "city" => ['required', 'string', function ($attr, $val, $fail) {
-                if (count(City::where('city_name_en', $val)->get()) == 0) {
+            "city" => ['nullable', 'string', function ($attr, $val, $fail) {
+                if (count(City::where('city_name_en', $val)->get()) == 0 && $val != '') {
                     $fail('The ' . $attr . ' is invalid.');
                 }
             }],
-            "streat" => ['required', 'string', 'max:190'],
+            "streat" => ['nullable', 'string', 'max:190'],
             "address_note" => ['nullable', 'string', 'max:255'],
-            // "longitude" => "nullable|regex:/^\d+(\.\d{1,2})?$/",
-            // "latitude" => ['nullable'],
         ];
     }
 }

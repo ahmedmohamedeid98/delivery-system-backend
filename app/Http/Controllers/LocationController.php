@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\CreateLocationRequest;
+use App\Http\Requests\CreateDeliveryLocationRequest;
+use App\Http\Requests\CreateTargetLocationRequest;
 use App\Models\AddedDeliveryLocation;
 use App\Models\AddedTargetLocation;
 use App\Models\DeliveryLocation;
 use App\Models\TargetLocation;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class LocationController extends Controller
@@ -16,7 +15,7 @@ class LocationController extends Controller
     public function getTargetLocations()
     {
         $user_id = Auth::user()->id;
-        $locations = AddedTargetLocation::where('user_id', $user_id)->get();
+        $locations = AddedTargetLocation::where('user_id', $user_id)->orderByDesc('created_at')->get();
         $locations_count = count($locations);
         $location_details = [];
         for ($i = 0; $i < $locations_count; $i++) {
@@ -28,7 +27,7 @@ class LocationController extends Controller
     public function getDeliveryLocations()
     {
         $user_id = Auth::user()->id;
-        $locations = AddedDeliveryLocation::where('user_id', $user_id)->get();
+        $locations = AddedDeliveryLocation::where('user_id', $user_id)->orderByDesc('created_at')->get();
         $locations_count = count($locations);
         $location_details = [];
         for ($i = 0; $i < $locations_count; $i++) {
@@ -37,7 +36,7 @@ class LocationController extends Controller
         return $this->success('get delivery location successfully', $location_details);
     }
 
-    public function createDeliveryLocation(CreateLocationRequest $request)
+    public function createDeliveryLocation(CreateDeliveryLocationRequest $request)
     {
         $user_id = Auth::user()->id;
         $location = DeliveryLocation::create($request->all());
@@ -48,10 +47,18 @@ class LocationController extends Controller
         return $this->success('delivery location add successfully!', $location);
     }
 
-    public function createTargetLocation(CreateLocationRequest $request)
+    public function createTargetLocation(CreateTargetLocationRequest $request)
     {
         $user_id = Auth::user()->id;
-        $location = TargetLocation::create($request->all());
+        $data = $request->all();
+        $location = TargetLocation::create(
+            [
+                "country" => $data["country"],
+                "state" => $data["state"],
+                "city" => isset($data["city"]) ? $data['city'] : '',
+                "streat" => isset($data["streat"]) ? $data["streat"] : "",
+            ]
+        );
         AddedTargetLocation::create([
             'user_id' => $user_id,
             'target_location_id' => $location->id,

@@ -65,7 +65,7 @@ class TaskController extends Controller
             return $query;
         })->whereHas('targetLocation', function ($query) use ($profile) {
             // Returen Tasks nearst to user location
-            return $query->where('country', $profile->country)->where('state', $profile->state)->where('city', $profile->city);
+            return $query->where('country', $profile->country)->where('state', $profile->state)->whereIn('city', [$profile->city, '']);
         })->where(function ($query) use ($budget_classes) {
             // Filter Task Based On Budget
             foreach ($budget_classes as $b_class) {
