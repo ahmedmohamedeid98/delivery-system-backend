@@ -12,7 +12,8 @@
         "laravel/passport": "^10.3",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
-        "paytabscom/laravel_paytabs": "dev-master"
+        "paytabscom/laravel_paytabs": "dev-master",
+        "pusher/pusher-php-server": "^7.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

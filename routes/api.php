@@ -5,6 +5,7 @@ use App\Http\Controllers\ApplyOnTaskController;
 use App\Http\Controllers\Auth\ApiAuthController;
 use App\Http\Controllers\Auth\ApiSocialAuthController;
 use App\Http\Controllers\Auth\ForgetPasswordController;
+use App\Http\Controllers\ChatsController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\InterviewController;
@@ -94,8 +95,8 @@ Route::get('feedback', [DashboardController::class, 'getFeedback'])->middleware(
 Route::post('feedback', [DashboardController::class, 'addFeedback'])->middleware('auth:api');
 
 
-
-
+Route::get('messages', [ChatsController::class, 'fetchMessages'])->middleware('auth:api');
+Route::post('messages', [ChatsController::class, 'sendMessage'])->middleware('auth:api');
 
 
 

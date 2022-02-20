@@ -63,4 +63,9 @@ class User extends Authenticatable
     { //dddd Do of MMMM YYYY h:mm:ss A
         return Carbon::parse($this->attributes['created_at'])->isoFormat("Do of MMMM YYYY");
     }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
 }
