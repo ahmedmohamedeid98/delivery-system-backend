@@ -47,9 +47,9 @@ class ProfileController extends Controller
         if (!$profile) {
             try {
                 $profile = Profile::create([
+                    'user_id'=>Auth::user()->id,
                     'about' => $req->about,
                     'gender' => $req->gender,
-
                     'state' => $req->state,
                     'city' => $req->city,
                     'phone' => $req->phone,
@@ -64,7 +64,6 @@ class ProfileController extends Controller
                     $profile->gender = $req->gender;
                     $profile->state = $req->state;
                     $profile->city = $req->city;
-
                     $profile->phone = $req->phone;
                     $profile->about = $req->about;
                     $user->name = $req->name;
