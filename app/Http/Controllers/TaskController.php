@@ -24,8 +24,6 @@ class TaskController extends Controller
 {
     public function index(Request $request)
     {
-        $per_page = 1;
-        $page = $request->query('page') ?? 1;
         $user_id = Auth::user()->id;
         $profile = Profile::find($user_id);
         if (!$profile) {
