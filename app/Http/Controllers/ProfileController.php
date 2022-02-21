@@ -49,7 +49,7 @@ class ProfileController extends Controller
                 $profile = Profile::create([
                     'about' => $req->about,
                     'gender' => $req->gender,
-                    'country' => $req->country,
+
                     'state' => $req->state,
                     'city' => $req->city,
                     'phone' => $req->phone,
@@ -64,7 +64,7 @@ class ProfileController extends Controller
                     $profile->gender = $req->gender;
                     $profile->state = $req->state;
                     $profile->city = $req->city;
-                    $profile->country = $req->country;
+
                     $profile->phone = $req->phone;
                     $profile->about = $req->about;
                     $user->name = $req->name;
