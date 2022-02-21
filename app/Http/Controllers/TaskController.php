@@ -116,9 +116,4 @@ class TaskController extends Controller
             return $this->failure([$e->getMessage()]);
         }
     }
-
-    private function getTargetLocationIds($country, $state, $city)
-    {
-        return TargetLocation::where("country", $country)->where("state", $state)->where('city', $city)->get('id');
-    }
 }

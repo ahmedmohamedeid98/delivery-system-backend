@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ApiUserController;
 use App\Http\Controllers\ApplyOnTaskController;
 use App\Http\Controllers\Auth\ApiAuthController;
@@ -101,7 +102,8 @@ Route::get('messages', [ChatsController::class, 'fetchMessages'])->middleware('a
 Route::post('messages', [ChatsController::class, 'sendMessage'])->middleware('auth:api');
 
 Route::post('contact-us', [PublichActionController::class, 'sendContactForm']);
-
+Route::get('is-admin', [AdminController::class, 'isAdmin'])->middleware('auth:api');
+Route::delete('task{id?}', [AdminController::class, 'deleteTask'])->middleware('auth:api');
 
 
 

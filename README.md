@@ -26,6 +26,8 @@ The REST API to the eDelivery system is described below.
 * [get another user feedback](#get-another-user-feedback)
 * [contact us - Post](#contact-us)
 * [load image from server](#load-image-from-server)
+* [is user admin](#is-user-admin)
+* [delete task](#delete-task)
 
 
 
@@ -235,3 +237,34 @@ The REST API to the eDelivery system is described below.
 `remote server`
 
     <img src="https://www.remote-server.com/img/example.png" alt="">
+
+## Is User Admin
+`Get /is-admin`
+
+    .../api/is-admin
+
+### Header
+
+    {
+        "Authorization": "token required"
+    }
+
+### response
+
+    {
+        "success": true,
+        "message": "user is admin",
+        "data": {
+            "is_admin": true
+        }
+    }
+
+    or
+
+    {
+        "success": true,
+        "message": "user is not admin",
+        "data": {
+            "is_admin": false
+        }
+    }

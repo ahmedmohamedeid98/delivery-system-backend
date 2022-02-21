@@ -45,6 +45,14 @@ class Controller extends BaseController
         ], 422);
     }
 
+    public function unauthorizedFailure()
+    {
+        return response([
+            'success' => false,
+            'errors' => 'unauthorized operation!',
+        ], 401);
+    }
+
     public function hasAddress($user_id)
     {
         $profile = Profile::find($user_id);
