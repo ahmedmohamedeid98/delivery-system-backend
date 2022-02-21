@@ -28,6 +28,8 @@ The REST API to the eDelivery system is described below.
 * [load image from server](#load-image-from-server)
 * [is user admin](#is-user-admin)
 * [delete task](#delete-task)
+* [get tasks which created by user](#get-created-tasks-by-user)
+* [get tasks which applied in by user](#get-tasks-applied-in-by-user)
 
 
 
@@ -300,6 +302,137 @@ The REST API to the eDelivery system is described below.
     {
         "success": false,
         "errors": "unauthorized operation!"
+    }
+
+[Back to endpoints list.](#endpoints)
+
+---
+
+## Get Created Tasks by User
+`GET`
+
+    .../api/tasks/me
+
+### Header
+    
+    {
+        "Authorization": "token is required"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "get my created tasks successfully",
+        "data": [
+            {
+                "id": 9,
+                "title": "task title",
+                "task_status": 0,
+                "description": "this skdms dsldmsd fdlmfd ldmfd  this skdms dsldmsd fdlmfd ldmfd",
+                "budget": 100,
+                "order_cost": 0,
+                "payment_method": 1,
+                "required_invoice": 1,
+                "note": "",
+                "order_status": 0,
+                "travel_status": 0,
+                "delivery_date": "2022-02-22 00:00:00",
+                "user_id": 1,
+                "delivery_location_id": 7,
+                "target_location_id": 18,
+                "created_at": "2022-02-20T19:29:15.000000Z",
+                "updated_at": "2022-02-20T19:29:15.000000Z",
+                "paid_service": null,
+                "paid_order": null,
+                "paid_both": null,
+                "feedback": [
+                    {
+                        "sender_id": 1,
+                        "reciver_id": 2,
+                        "task_id": 9,
+                        "rate": 4.5,
+                        "content": "Good work Ali you delivery the order on time.",
+                        "created_at": "2022-02-21T21:01:07.000000Z",
+                        "updated_at": "2022-02-21T21:01:07.000000Z"
+                    },
+                    {
+                        "sender_id": 2,
+                        "reciver_id": 1,
+                        "task_id": 9,
+                        "rate": 5,
+                        "content": "Pleased to deal with you ahmed i hope to work again with you!",
+                        "created_at": "2022-02-22T21:01:53.000000Z",
+                        "updated_at": "2022-02-22T21:01:53.000000Z"
+                    }
+                ]
+            }
+        ]
+    }
+
+
+[Back to endpoints list.](#endpoints)
+
+---
+## Get Tasks Applied in by User
+`GET`
+    
+    .../api/tasks/applied
+
+### Header
+    {
+        "Authorization": "token is required"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "get my applied in tasks successfully",
+        "data": [
+            {
+                "id": 9,
+                "title": "task title",
+                "task_status": 0,
+                "description": "this skdms dsldmsd fdlmfd ldmfd  this skdms dsldmsd fdlmfd ldmfd",
+                "budget": 100,
+                "order_cost": 0,
+                "payment_method": 1,
+                "required_invoice": 1,
+                "note": "",
+                "order_status": 0,
+                "travel_status": 0,
+                "delivery_date": "2022-02-22 00:00:00",
+                "user_id": 1,
+                "delivery_location_id": 7,
+                "target_location_id": 18,
+                "created_at": "2022-02-20T19:29:15.000000Z",
+                "updated_at": "2022-02-20T19:29:15.000000Z",
+                "paid_service": null,
+                "paid_order": null,
+                "paid_both": null,
+                "feedback": [
+                    {
+                        "sender_id": 1,
+                        "reciver_id": 2,
+                        "task_id": 9,
+                        "rate": 4.5,
+                        "content": "Good work Ali you delivery the order on time.",
+                        "created_at": "2022-02-21T21:01:07.000000Z",
+                        "updated_at": "2022-02-21T21:01:07.000000Z"
+                    },
+                    {
+                        "sender_id": 2,
+                        "reciver_id": 1,
+                        "task_id": 9,
+                        "rate": 5,
+                        "content": "Pleased to deal with you ahmed i hope to work again with you!",
+                        "created_at": "2022-02-22T21:01:53.000000Z",
+                        "updated_at": "2022-02-22T21:01:53.000000Z"
+                    }
+                ]
+            }
+        ]
     }
 
 [Back to endpoints list.](#endpoints)
