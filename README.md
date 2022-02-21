@@ -32,8 +32,9 @@ The REST API to the eDelivery system is described below.
 
 
 ## Get User Address
-`GET user/address`
+`GET`
 
+    .../api/user/address
 ### Header
     {
         "Authorization": "token"
@@ -52,7 +53,9 @@ The REST API to the eDelivery system is described below.
 }
 
 ## Update User Address
-`POST user/address`
+`POST`
+    
+    .../api/user/address
 
 ### Header
     {
@@ -85,7 +88,7 @@ The REST API to the eDelivery system is described below.
 - add feedback after task competed .
 - get all your feedback added by others.
 ### Create Feedback 
-`POST /feeback`
+`POST`
 
     .../api/feedback
 
@@ -130,7 +133,7 @@ The REST API to the eDelivery system is described below.
 
 ---
 ### Get My Feedback
-`Get feeback/me`
+`GET`
 
     ../api/feedback/me
 
@@ -160,7 +163,7 @@ The REST API to the eDelivery system is described below.
     }
 
 ## Get Another User Feedback
-`Get /feedback`
+`GET`
     
     .../api/feedback?user_id=5
 
@@ -194,8 +197,7 @@ The REST API to the eDelivery system is described below.
 
 ---
 ## Contact US
-
-`POST contact-us`
+`POST`
     
     .../api/contact-us
 
@@ -239,7 +241,7 @@ The REST API to the eDelivery system is described below.
     <img src="https://www.remote-server.com/img/example.png" alt="">
 
 ## Is User Admin
-`Get /is-admin`
+`GET`
 
     .../api/is-admin
 
@@ -268,3 +270,38 @@ The REST API to the eDelivery system is described below.
             "is_admin": false
         }
     }
+
+[Back to endpoints list.](#endpoints)
+
+---
+
+## Delete Task
+`DELETE`
+
+    .../api/task?id=7
+
+### Header
+    
+    {
+        "Authorization": "token is required"
+    }
+
+### Response
+
+    success:
+    
+    {
+        "success": true,
+        "message": "task deleted successfully!"
+    }
+
+    failuer:
+    
+    {
+        "success": false,
+        "errors": "unauthorized operation!"
+    }
+
+[Back to endpoints list.](#endpoints)
+
+---
