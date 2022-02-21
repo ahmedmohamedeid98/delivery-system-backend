@@ -15,8 +15,12 @@ class DashboardController extends Controller
     public function getMyTasks()
     {
         $user_id = Auth::user()->id;
-        $tasks = Task::where('user_id', $user_id)->get();
+        $tasks = Task::with('feedback')->where('user_id', $user_id)->get();
         return $this->success('get my tasks successfully', $tasks);
+    }
+
+    public function getAppliedTasks()
+    {
     }
 
     public function getMyFeedback()
@@ -37,7 +41,7 @@ class DashboardController extends Controller
             return $this->failure(['invalid user id']);
         }
         try {
-            $feedbacks = Feedback::where('reciver_id', $user_id)->get();
+            $feedbacks = Feedback::where('reciver_id', $user_id)->limit(5)->get();
             return $this->success('get all user feedback successfully', $feedbacks);
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
