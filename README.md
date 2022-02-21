@@ -11,13 +11,25 @@
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
+# Dependancy
+* doctrine/dbal : migrate change on existing column
+
 # REST API
 
 The REST API to the eDelivery system is described below.
 
-## Profile
+## EndPoints
+* [get user address](#get-user-address)
+* [update user address](#update-user-address)
+* [create feedback](#create-feedback)
+* [get my feedback](#get-my-feedback)
+* [get another user feedback](#get-another-user-feedback)
+* [contact us - Post](#contact-us)
+* [load image from server](#load-image-from-server)
 
-### Address (GET)
+
+
+## Get User Address
 `GET user/address`
 
 ### Header
@@ -37,7 +49,7 @@ The REST API to the eDelivery system is described below.
 
 }
 
-### Address (POST)
+## Update User Address
 `POST user/address`
 
 ### Header
@@ -62,15 +74,18 @@ The REST API to the eDelivery system is described below.
     }
 
 
+[Back to endpoints list.](#endpoints)
+
+---
+
 ## Feedback
 
 - add feedback after task competed .
 - get all your feedback added by others.
-### Request (Create)
+### Create Feedback 
 `POST /feeback`
 
-    - https://ds-marketplace-api.herokuapp.com/api/feedback
-    - http://localhost:8000/api/feedback
+    .../api/feedback
 
 ### Header
     {
@@ -108,11 +123,14 @@ The REST API to the eDelivery system is described below.
         ]
     }
 
-### Request (fetch)
-`Get /feeback`
 
-    - https://ds-marketplace-api.herokuapp.com/api/feedback
-    - http://localhost:8000/api/feedback
+[Back to endpoints list.](#endpoints)
+
+---
+### Get My Feedback
+`Get feeback/me`
+
+    ../api/feedback/me
 
 ### Header
     {
@@ -138,3 +156,82 @@ The REST API to the eDelivery system is described below.
             }
         ]
     }
+
+## Get Another User Feedback
+`Get /feedback`
+    
+    .../api/feedback?user_id=5
+
+### Heaser
+    {
+        "Authorization" : "token required"
+    }
+
+### Response
+    {
+        "success": true,
+        "message": "get all user feedbacks successfully",
+        "data": [
+            {
+                "sender_id": 1,
+                "reciver_id": 3,
+                "task_id": 1,
+                "rate": 4.5,
+                "content": "this user is amazing",
+                "created_at": "2022-02-16T14:08:27.000000Z",
+                "updated_at": "2022-02-16T14:08:27.000000Z"
+            },
+            {
+                ...
+            }
+        ]
+    }
+
+
+[Back to endpoints list.](#endpoints)
+
+---
+## Contact US
+
+`POST contact-us`
+    
+    .../api/contact-us
+
+### Header
+    not required, any user can send contact us form.
+### Body
+    {
+        "full_name" : "user full name",
+        "email": "example@example.com",
+        "phone": "01095xxxxxx",
+        "subject": "can not buy new connects",
+        "message": "Hi in last time I am trying to ...."
+    }
+
+### Response
+    {
+        "success": true,
+        "message": "your message was sent successfully",
+        "data": {
+            "id": 1
+            "full_name" : "user full name",
+            "email": "example@example.com",
+            "phone": "01095xxxxxx",
+            "subject": "can not buy new connects",
+            "message": "Hi in last time I am trying to ....",
+            "updated_at": "2022-02-21T00:01:48.000000Z",
+            "created_at": "2022-02-21T00:01:48.000000Z",
+        }
+    }
+
+
+[Back to endpoints list.](#endpoints)
+
+---
+## Load Image From Server
+`local server`
+    
+    <img src="http://localhost:8000/img/example.png" alt="">
+`remote server`
+
+    <img src="https://www.remote-server.com/img/example.png" alt="">
