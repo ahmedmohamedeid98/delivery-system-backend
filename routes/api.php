@@ -12,6 +12,7 @@ use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LocationController;
 use App\Http\Controllers\PayTabsGatewayController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\PublichActionController;
 use App\Http\Controllers\StaticDataController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Http\Request;
@@ -91,14 +92,15 @@ Route::post('interview/approve', [InterviewController::class, 'approve'])->middl
 
 Route::get('task/me', [DashboardController::class, 'getMyTasks'])->middleware('auth:api');
 Route::get('user/connects', [ApiUserController::class, 'getConnects'])->middleware("auth:api");
-Route::get('feedback', [DashboardController::class, 'getFeedback'])->middleware('auth:api');
+Route::get('feedback/me', [DashboardController::class, 'getMyFeedback'])->middleware('auth:api');
+Route::get('feedback{user_id?}', [DashboardController::class, 'getFeedback'])->middleware('auth:api');
 Route::post('feedback', [DashboardController::class, 'addFeedback'])->middleware('auth:api');
 
 
 Route::get('messages', [ChatsController::class, 'fetchMessages'])->middleware('auth:api');
 Route::post('messages', [ChatsController::class, 'sendMessage'])->middleware('auth:api');
 
-
+Route::post('contact-us', [PublichActionController::class, 'sendContactForm']);
 
 
 
