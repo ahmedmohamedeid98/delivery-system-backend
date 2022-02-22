@@ -6,6 +6,7 @@ use App\Http\Requests\FeedbackRequest;
 use App\Models\Feedback;
 use App\Models\Task;
 use App\Models\User;
+use App\Models\UserRequestTask;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,11 +17,15 @@ class DashboardController extends Controller
     {
         $user_id = Auth::user()->id;
         $tasks = Task::with('feedback')->where('user_id', $user_id)->get();
-        return $this->success('get my tasks successfully', $tasks);
+        return $this->success('get my created tasks successfully', $tasks);
     }
 
     public function getAppliedTasks()
     {
+        $user_id = Auth::user()->id;
+        $taskIds =  UserRequestTask::where('user_id', $user_id)->get('task_id');
+        $tasks = Task::whereIn('id', $taskIds)->with('feedback')->get();
+        return $this->success('get my applied in tasks successfully', $tasks);
     }
 
     public function getMyFeedback()

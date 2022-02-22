@@ -30,6 +30,11 @@ class Task extends Model
         return $this->hasMany(Feedback::class);
     }
 
+    public function offers()
+    {
+        return $this->hasMany(UserRequestTask::class);
+    }
+
     protected $fillable = [
         'title',
         'task_status',
