@@ -65,7 +65,7 @@ Route::get('user/address', [ProfileController::class, 'getAddress'])->middleware
 Route::post('user/address', [ProfileController::class, 'updateAddress'])->middleware("auth:api");
 Route::get('location/data', [StaticDataController::class, 'getGovernorate'])->middleware('auth:api');
 
-
+Route::delete('myTask{id?}', [DashboardController::class, 'deleteTask'])->middleware('auth:api');
 
 
 
