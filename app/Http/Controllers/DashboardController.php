@@ -79,4 +79,15 @@ class DashboardController extends Controller
             return $this->failure([$e->getMessage()]);
         }
     }
+
+    public function deleteTask(Request $request)
+    {
+        $task_id = $request->query('id');
+        if (!$task_id || !Task::find($task_id)) {
+            return $this->failure(['invalid task id']);
+        }
+        Task::find($task_id)->delete();
+        return $this->success('task deleted successfully!');
+    }
+
 }

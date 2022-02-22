@@ -19,6 +19,7 @@ use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
+
     public function show()
     {
         $id = Auth::user()->id;
@@ -42,31 +43,55 @@ class ProfileController extends Controller
     }
     public function edit(Request $req)
     {
+        //$file= $req->input('file');
+        // if ($req && $req->hasFile('photo')) {
+
+        //     $photo = $this->store($req->file('photo'));
+        //     return $photo;
+        //  }else{
+        //      return 'dosnt has file';
+        //  }
+        $photo = null;
+        $data= $req->input('data');
+        $file= $req->input('file');
         $user = User::find(Auth::user()->id);
         $profile = Profile::find(Auth::user()->id);
+
+        if ($file && $file->hasFile('photo')) {
+            $photo = $this->store($file->file('photo'));
+         }
         if (!$profile) {
             try {
                 $profile = Profile::create([
                     'user_id'=>Auth::user()->id,
-                    'about' => $req->about,
-                    'gender' => $req->gender,
-                    'state' => $req->state,
-                    'city' => $req->city,
-                    'phone' => $req->phone,
+                    'about' => $data['about'],
+                    'gender' => $data['gender'],
+                    'state' => $data['state'],
+                    'city' => $data['city'],
+                    'phone' => $data['phone'],
                 ]);
+                if($photo != null){
+                    $user->photo_url = $photo;
+                }
+
             } catch (Exception $e) {
                 return $this->failure([$e->getMessage()]);
             }
             return [new ProfileResource($profile), new UserResource($user)];
         } else {
+            return $photo;
             try {
-                DB::transaction(function () use ($profile, $user, $req) {
-                    $profile->gender = $req->gender;
-                    $profile->state = $req->state;
-                    $profile->city = $req->city;
-                    $profile->phone = $req->phone;
-                    $profile->about = $req->about;
-                    $user->name = $req->name;
+                DB::transaction(function () use ($profile, $user, $data ,$photo) {
+
+                    $profile->gender = $data['gender'];
+                    $profile->state = $data['state'];
+                    $profile->city = $data['city'];
+                    $profile->phone = $data['phone'];
+                    $profile->about = $data['about'];
+                    $user->name = $data['name'];
+                    if($photo != null){
+                        $user->photo_url = $photo;
+                    }
                     $profile->save();
                     $user->save();
                 });
@@ -137,5 +162,12 @@ class ProfileController extends Controller
             $profile->save();
         });
         return $this->success("update address successfully", new UserAddressResource($profile));
+    }
+    private function store($file)
+    {
+        $filename  = $file->getClientOriginalName();
+        $picture   = date('His') . '-' . $filename;
+        $file->move(public_path('img'), $picture);
+        return $picture;
     }
 }
