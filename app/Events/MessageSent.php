@@ -11,6 +11,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Ramsey\Uuid\Type\Integer;
 
 class MessageSent implements ShouldBroadcast
 {
@@ -21,7 +22,9 @@ class MessageSent implements ShouldBroadcast
      *
      * @var User
      */
-    public $user;
+    // public $user;
+
+    public $channelId;
 
     /**
      * Message details
@@ -35,9 +38,10 @@ class MessageSent implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(User $user, Message $message)
+    public function __construct(Message $message, int $channelId)
     {
-        $this->user = $user;
+        $this->channelId = $channelId;
+        // $this->user = $user;
         $this->message = $message;
     }
 
@@ -48,6 +52,11 @@ class MessageSent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel(env('CHAT_CHANNEL'));
+        return new PrivateChannel('chat-app.' . $this->channelId);
+    }
+
+    public function broadcastAs()
+    {
+        return 'message-sent';
     }
 }

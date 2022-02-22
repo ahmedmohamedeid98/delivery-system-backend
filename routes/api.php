@@ -107,9 +107,10 @@ Route::get('is-admin', [AdminController::class, 'isAdmin'])->middleware('auth:ap
 Route::delete('task{id?}', [AdminController::class, 'deleteTask'])->middleware('auth:api');
 
 
+Route::post('pusher/auth', [ChatsController::class, 'authPusher'])->middleware('auth:api');
 
 
-
+Route::get('channel{id?}', [ChatsController::class, 'getChannelDetails'])->middleware('auth:api');
 
 
 

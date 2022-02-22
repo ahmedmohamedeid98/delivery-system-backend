@@ -18,6 +18,6 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
     return (int) $user->id === (int) $id;
 });
 
-Broadcast::channel(env('CHAT_CHANNEL'), function ($user) {
+Broadcast::channel("chat-app.1", function ($user) {
     return Auth::check();
 });
