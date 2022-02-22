@@ -30,7 +30,7 @@ class CreateTaskRequest extends FormRequest
             'description' => ['required', 'string', 'max:1200'],
             'budget' => ['required', 'integer'],
             'order_cost' => ['nullable', 'integer'],
-            'payment_method' => ['required', 'integer', Rule::in([1, 2])],
+            'payment_method' => ['required', 'integer', Rule::in([0, 1])],
             'required_invoice' => ['required', 'boolean'],
             'note' => ['nullable', 'string'],
             'order_status' => ['nullable', 'integer', Rule::in([0, 1, 2, 3])],
