@@ -30,6 +30,7 @@ The REST API to the eDelivery system is described below.
 * [delete task](#delete-task)
 * [get tasks which created by user](#get-created-tasks-by-user)
 * [get tasks which applied in by user](#get-tasks-applied-in-by-user)
+* [get chat channel details](#get-chat-channel-details)
 
 
 
@@ -311,7 +312,7 @@ The REST API to the eDelivery system is described below.
 ## Get Created Tasks by User
 `GET`
 
-    .../api/tasks/me
+    .../api/task/me
 
 ### Header
     
@@ -365,6 +366,11 @@ The REST API to the eDelivery system is described below.
                         "created_at": "2022-02-22T21:01:53.000000Z",
                         "updated_at": "2022-02-22T21:01:53.000000Z"
                     }
+                ],
+                "offers": [
+                    {
+                        "user_id": 5
+                    }
                 ]
             }
         ]
@@ -377,7 +383,7 @@ The REST API to the eDelivery system is described below.
 ## Get Tasks Applied in by User
 `GET`
     
-    .../api/tasks/applied
+    .../api/task/applied
 
 ### Header
     {
@@ -438,3 +444,38 @@ The REST API to the eDelivery system is described below.
 [Back to endpoints list.](#endpoints)
 
 ---
+
+## Get Chat Channel Details
+`GET`
+
+    .../api/channel?id=5
+
+### Header
+
+    {
+        "Authentication": "token"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "success",
+        "data": {
+            "me": {
+                "id": 1,
+                "name": "ahmed",
+                "email": "ahmed3@gmail.com",
+                "photo_url": "default-profile-image-2122202.png",
+                "created_at": "2022-02-12T17:40:14.000000Z"
+            },
+            "chat_with": {
+                "id": 5,
+                "name": "khaled",
+                "email": "khaled@gmail.com",
+                "photo_url": "default-profile-image-2122202.png",
+                "created_at": "2022-02-17T21:33:47.000000Z"
+            },
+            "on_channel_id": 1
+        }
+    }

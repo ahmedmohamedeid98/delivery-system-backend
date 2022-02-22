@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\FeedbackRequest;
+use App\Http\Resources\MyTaskResource;
 use App\Models\Feedback;
 use App\Models\Task;
 use App\Models\User;
@@ -16,8 +17,8 @@ class DashboardController extends Controller
     public function getMyTasks()
     {
         $user_id = Auth::user()->id;
-        $tasks = Task::with('feedback')->where('user_id', $user_id)->get();
-        return $this->success('get my created tasks successfully', $tasks);
+        $tasks = Task::with('feedback')->with('offers')->where('user_id', $user_id)->get();
+        return $this->success('get my created tasks successfully', MyTaskResource::collection($tasks));
     }
 
     public function getAppliedTasks()
