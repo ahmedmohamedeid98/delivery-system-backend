@@ -67,6 +67,7 @@ class ProfileController extends Controller
                     $profile->phone = $req->phone;
                     $profile->about = $req->about;
                     $user->name = $req->name;
+                    $user->photo_url = $req->photo_url;
                     $profile->save();
                     $user->save();
                 });
