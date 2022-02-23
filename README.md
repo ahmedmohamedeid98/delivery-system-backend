@@ -32,7 +32,7 @@ The REST API to the eDelivery system is described below.
 * [get tasks which applied in by user](#get-tasks-applied-in-by-user)
 * [get chat channel details](#get-chat-channel-details)
 * [admin: get contact us forms](#admin-get-contact-us)
-
+* [admin: get users](#admin-get-users)
 
 
 ## Get User Address
@@ -481,6 +481,9 @@ The REST API to the eDelivery system is described below.
         }
     }
 
+[Back to endpoints list.](#endpoints)
+
+---
 ## Admin Get Contact Us
 `GET`
 
@@ -538,3 +541,89 @@ The REST API to the eDelivery system is described below.
         }
     }
     
+[Back to endpoints list.](#endpoints)
+
+---
+
+## Admin Get Users
+`GET`
+
+    .../api/admin/users
+
+### Header
+    {
+        "Authentication" : "token"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "success",
+        "data": {
+            "users": [
+                {
+                    "id": 1,
+                    "name": "ahmed",
+                    "email": "ahmed3@gmail.com",
+                    "photo_url": "default-profile-image-2122202.png",
+                    "created_at": "2022-02-12T17:40:14.000000Z"
+                }
+            ],
+            "paginate": {
+                "current_page": 1,
+                "from": 1,
+                "last_page": 6,
+                "links": [
+                    {
+                        "url": null,
+                        "label": "&laquo; Previous",
+                        "active": false
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/users?page=1",
+                        "label": "1",
+                        "active": true
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/users?page=2",
+                        "label": "2",
+                        "active": false
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/users?page=3",
+                        "label": "3",
+                        "active": false
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/users?page=4",
+                        "label": "4",
+                        "active": false
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/users?page=5",
+                        "label": "5",
+                        "active": false
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/users?page=6",
+                        "label": "6",
+                        "active": false
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/users?page=2",
+                        "label": "Next &raquo;",
+                        "active": false
+                    }
+                ],
+                "path": "http://localhost:8000/api/admin/users",
+                "per_page": 1,
+                "to": 1,
+                "total": 6
+            }
+        }
+    }
+
+[Back to endpoints list.](#endpoints)
+
+---
