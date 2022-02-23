@@ -51,47 +51,38 @@ class ProfileController extends Controller
         //  }else{
         //      return 'dosnt has file';
         //  }
-        $photo = null;
-        $data= $req->input('data');
-        $file= $req->input('file');
+
+
         $user = User::find(Auth::user()->id);
         $profile = Profile::find(Auth::user()->id);
 
-        if ($file && $file->hasFile('photo')) {
-            $photo = $this->store($file->file('photo'));
-         }
+
         if (!$profile) {
             try {
                 $profile = Profile::create([
                     'user_id'=>Auth::user()->id,
-                    'about' => $data['about'],
-                    'gender' => $data['gender'],
-                    'state' => $data['state'],
-                    'city' => $data['city'],
-                    'phone' => $data['phone'],
+                    'about' => $req->about,
+                    'gender' => $req->gender,
+                    'state' => $req->state,
+                    'city' => $req->city,
+                    'phone' => $req->phone,
                 ]);
-                if($photo != null){
-                    $user->photo_url = $photo;
-                }
+
 
             } catch (Exception $e) {
                 return $this->failure([$e->getMessage()]);
             }
             return [new ProfileResource($profile), new UserResource($user)];
         } else {
-            return $photo;
             try {
-                DB::transaction(function () use ($profile, $user, $data ,$photo) {
+                DB::transaction(function () use ($profile, $user, $req) {
 
-                    $profile->gender = $data['gender'];
-                    $profile->state = $data['state'];
-                    $profile->city = $data['city'];
-                    $profile->phone = $data['phone'];
-                    $profile->about = $data['about'];
-                    $user->name = $data['name'];
-                    if($photo != null){
-                        $user->photo_url = $photo;
-                    }
+                    $profile->gender = $req->gender;
+                    $profile->state = $req->state;
+                    $profile->city = $req->city;
+                    $profile->phone = $req->phone;
+                    $profile->about = $req->about;
+                    $user->name = $req->name;
                     $profile->save();
                     $user->save();
                 });
