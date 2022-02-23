@@ -16,6 +16,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublichActionController;
 use App\Http\Controllers\StaticDataController;
 use App\Http\Controllers\TaskController;
+use App\Models\ChatChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
@@ -111,10 +112,11 @@ Route::post('pusher/auth', [ChatsController::class, 'authPusher'])->middleware('
 
 
 Route::get('channel{id?}', [ChatsController::class, 'getChannelDetails'])->middleware('auth:api');
+Route::get('chat/me/channels', [ChatsController::class, 'getAllMyChatChannels'])->middleware('auth:api');
 
 
-
-
+Route::get('admin/contact-us', [AdminController::class, 'getContactUs'])->middleware('auth:api');
+Route::get('admin/users', [AdminController::class, 'getUsers'])->middleware('auth:api');
 
 
 

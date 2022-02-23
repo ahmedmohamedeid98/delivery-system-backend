@@ -8,6 +8,7 @@ use App\Models\ChatChannel;
 use App\Models\Message;
 use App\Models\User;
 use Exception;
+use Illuminate\Broadcasting\Channel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Pusher\Pusher;
@@ -103,5 +104,21 @@ class ChatsController extends Controller
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
+    }
+
+    public function getAllMyChatChannels()
+    {
+        $user = Auth::user();
+        $channels = ChatChannel::orWhere('user1_id', $user->id)->orWhere('user2_id', $user->id)->get();
+        $details = [];
+        foreach ($channels as $channel) {
+            $messages = Message::where('channel_id', $channel->id)->get();
+            if ($messages && count($messages) > 0) {
+                $chat_with_id = $user->id == $channel->user1_id ? $channel->user2_id : $channel->user1_id;
+                $chat_with = User::find($chat_with_id);
+                array_push($details, ['chat_with' => new UserResource($chat_with), 'on_channel_id' => $channel->id]);
+            }
+        }
+        return $this->success('success', ['me' => new UserResource($user), "channels" => $details]);
     }
 }
