@@ -68,7 +68,7 @@ Route::get('location/data', [StaticDataController::class, 'getGovernorate'])->mi
 
 Route::delete('myTask{id?}', [DashboardController::class, 'deleteTask'])->middleware('auth:api');
 
-
+Route::get('viewTask{id?}', [DashboardController::class, 'getTask'])->middleware('auth:api');
 
 
 
