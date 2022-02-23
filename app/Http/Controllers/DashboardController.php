@@ -98,7 +98,7 @@ class DashboardController extends Controller
             return $this->failure(['invalid task id']);
         }
         try {
-            $task = Task::where('id', $task_id)->get();
+            $task = Task::with('deliveryLocation','targetLocation')->where('id', $task_id)->get();
             return $this->success('get Task successfully', $task);
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
