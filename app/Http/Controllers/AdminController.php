@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ContactUsResource;
+use App\Models\ContactUs;
 use App\Models\Task;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -29,5 +31,12 @@ class AdminController extends Controller
         }
         Task::find($task_id)->delete();
         return $this->success('task deleted successfully!');
+    }
+
+    public function getContactUs()
+    {
+        $contactus = ContactUs::paginate(1);
+        $data = ContactUsResource::collection($contactus)->response()->getData();
+        return $this->success('success', ["forms" =>  $data->data, "paginate" => $data->meta]);
     }
 }

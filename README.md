@@ -31,6 +31,7 @@ The REST API to the eDelivery system is described below.
 * [get tasks which created by user](#get-created-tasks-by-user)
 * [get tasks which applied in by user](#get-tasks-applied-in-by-user)
 * [get chat channel details](#get-chat-channel-details)
+* [admin: get contact us forms](#admin-get-contact-us)
 
 
 
@@ -479,3 +480,61 @@ The REST API to the eDelivery system is described below.
             "on_channel_id": 1
         }
     }
+
+## Admin Get Contact Us
+`GET`
+
+    .../api/admin/contact-us
+
+### Header
+
+    {
+        "Authentication" : "token"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "success",
+        "data": {
+            "forms": [
+                {
+                    "id": 1,
+                    "full_name": "ahmed eid",
+                    "email": "ahmed@gmail.com",
+                    "phone": "01095454548",
+                    "subject": "can not buy new connects",
+                    "message": "hi my namasdsd dkfmdf dlfsd fsd;fldmsf",
+                    "created_at": "2022-02-21T00:01:48.000000Z"
+                }
+            ],
+            "paginate": {
+                "current_page": 1,
+                "from": 1,
+                "last_page": 1,
+                "links": [
+                    {
+                        "url": null,
+                        "label": "&laquo; Previous",
+                        "active": false
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/contact-us?page=1",
+                        "label": "1",
+                        "active": true
+                    },
+                    {
+                        "url": null,
+                        "label": "Next &raquo;",
+                        "active": false
+                    }
+                ],
+                "path": "http://localhost:8000/api/admin/contact-us",
+                "per_page": 1,
+                "to": 1,
+                "total": 1
+            }
+        }
+    }
+    

@@ -66,9 +66,9 @@ class InterviewController extends Controller
         try {
             DB::transaction(function () use ($data) {
                 $offer = UserRequestTask::find(['task_id' => $data['task_id'], 'user_id' => $data['user_id']]);
-                if ($offer->approve_status == 1) {
+                if ($offer && $offer->approve_status == 1) {
                     // 1. choose one to do the task
-                    $offer->update(['approve_status' => 2]);
+                    $offer->approve_status = 2;
                     $offer->save();
                     // 2. delete others
                     UserRequestTask::where('task_id', $data['task_id'])->where('approve_status', '!=', 2)->delete();
