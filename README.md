@@ -33,6 +33,7 @@ The REST API to the eDelivery system is described below.
 * [get chat channel details](#get-chat-channel-details)
 * [admin: get contact us forms](#admin-get-contact-us)
 * [admin: get users](#admin-get-users)
+* [admin: get transactions](#admin-get-transactions)
 
 
 ## Get User Address
@@ -627,3 +628,64 @@ The REST API to the eDelivery system is described below.
 [Back to endpoints list.](#endpoints)
 
 ---
+
+## Admin Get Transactions
+`GET`
+
+    .../api/admin/transactions
+
+### Header
+    {
+        "Authentication": "token"
+    }
+
+### Response
+
+    {
+    "success": true,
+    "message": "success",
+    "data": {
+        "transactions": [
+            'id': 4,
+            'trans_ref': 'TST2204901064398',
+            'user_id': 1
+            'task_id': null
+            'trans_amount': 50,
+            'trans_currency': 'EGP',
+            'trans_desc': '',
+            'trans_type': 'connects',
+            'res_status': 'A',
+            'res_msg': 'Authorised',
+            'trans_time': '2022-02-18T19:29:14Z',
+            'payment_method': 'MasterCard',
+            'payment_card': '5200 00## #### 0007',
+            'ipn_trace': 'IPNS0003.620FF604.000023E8'
+        ],
+        "paginate": {
+            "current_page": 1,
+            "from": null,
+            "last_page": 1,
+            "links": [
+                {
+                    "url": null,
+                    "label": "&laquo; Previous",
+                    "active": false
+                },
+                {
+                    "url": "http://localhost:8000/api/admin/transactions?page=1",
+                    "label": "1",
+                    "active": true
+                },
+                {
+                    "url": null,
+                    "label": "Next &raquo;",
+                    "active": false
+                }
+            ],
+            "path": "http://localhost:8000/api/admin/transactions",
+            "per_page": 5,
+            "to": null,
+            "total": 0
+        }
+    }
+}

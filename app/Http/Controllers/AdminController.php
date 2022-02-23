@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ContactUsResource;
+use App\Http\Resources\TransactionResource;
 use App\Http\Resources\UserResource;
 use App\Models\ContactUs;
 use App\Models\Task;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -36,15 +38,22 @@ class AdminController extends Controller
 
     public function getContactUs()
     {
-        $contactus = ContactUs::paginate(1);
+        $contactus = ContactUs::paginate(5);
         $data = ContactUsResource::collection($contactus)->response()->getData();
         return $this->success('success', ["forms" =>  $data->data, "paginate" => $data->meta]);
     }
 
     public function getUsers()
     {
-        $users = User::paginate(1);
+        $users = User::paginate(5);
         $data = UserResource::collection($users)->response()->getData();
         return $this->success('success', ["users" =>  $data->data, "paginate" => $data->meta]);
+    }
+
+    public function getTransactions()
+    {
+        $transactions = Transaction::paginate(5);
+        $data = TransactionResource::collection($transactions)->response()->getData();
+        return $this->success('success', ["transactions" =>  $data->data, "paginate" => $data->meta]);
     }
 }
