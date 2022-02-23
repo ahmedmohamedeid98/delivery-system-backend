@@ -118,7 +118,7 @@ Route::get('chat/me/channels', [ChatsController::class, 'getAllMyChatChannels'])
 Route::get('admin/contact-us', [AdminController::class, 'getContactUs'])->middleware('auth:api');
 Route::get('admin/users', [AdminController::class, 'getUsers'])->middleware('auth:api');
 Route::get('admin/transactions', [AdminController::class, 'getTransactions'])->middleware('auth:api');
-
+Route::get('admin/identities', [AdminController::class, 'getIdentities'])->middleware('auth:api');
 
 
 
