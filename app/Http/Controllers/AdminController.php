@@ -27,6 +27,9 @@ class AdminController extends Controller
 
     public function deleteTask(Request $request)
     {
+        if (Auth::user()->is_admin == false) {
+            return $this->unauthorizedFailure();
+        }
         $task_id = $request->query('id');
         if (!$task_id || !Task::find($task_id)) {
             return $this->failure(['invalid task id']);
@@ -40,6 +43,9 @@ class AdminController extends Controller
 
     public function getContactUs()
     {
+        if (Auth::user()->is_admin == false) {
+            return $this->unauthorizedFailure();
+        }
         $contactus = ContactUs::orderByDesc('created_at')->paginate(5);
         $data = ContactUsResource::collection($contactus)->response()->getData();
         return $this->success('success', ["forms" =>  $data->data, "paginate" => $data->meta]);
@@ -47,6 +53,9 @@ class AdminController extends Controller
 
     public function getUsers()
     {
+        if (Auth::user()->is_admin == false) {
+            return $this->unauthorizedFailure();
+        }
         $users = User::orderByDesc('created_at')->paginate(5);
         $data = UserResource::collection($users)->response()->getData();
         return $this->success('success', ["users" =>  $data->data, "paginate" => $data->meta]);
@@ -54,6 +63,9 @@ class AdminController extends Controller
 
     public function getTransactions()
     {
+        if (Auth::user()->is_admin == false) {
+            return $this->unauthorizedFailure();
+        }
         $transactions = Transaction::orderByDesc('created_at')->paginate(5);
         $data = TransactionResource::collection($transactions)->response()->getData();
         return $this->success('success', ["transactions" =>  $data->data, "paginate" => $data->meta]);
@@ -61,8 +73,25 @@ class AdminController extends Controller
 
     public function getIdentities()
     {
+        if (Auth::user()->is_admin == false) {
+            return $this->unauthorizedFailure();
+        }
         $identities = Identity::orderByDesc('created_at')->paginate(5);
         $data = IdentityResource::collection($identities)->response()->getData();
         return $this->success('success', ["identities" => $data->data, "paginate" => $data->meta]);
+    }
+
+    public function deleteUser(Request $request)
+    {
+        if (Auth::user()->is_admin == false) {
+            return $this->unauthorizedFailure();
+        }
+        $user_id = $request->query('id');
+        $res = User::where('id', $user_id)->delete();
+        if (!$res) {
+            return $this->failure(['invalid user id']);
+        }
+
+        return $this->success('user deleted successfully', $res);
     }
 }

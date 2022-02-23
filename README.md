@@ -35,6 +35,7 @@ The REST API to the eDelivery system is described below.
 * [admin: get users](#admin-get-users)
 * [admin: get transactions](#admin-get-transactions)
 * [admin: get identities](#admin-get-identities)
+* [admin: delete user](#admin-delete-user)
 
 
 ## Get User Address
@@ -758,4 +759,22 @@ The REST API to the eDelivery system is described below.
                 "total": 4
             }
         }
+    }
+
+## Admin Delete User
+`DELETE`
+
+    .../api/admin/user?id=7
+
+### Header
+    {
+        "Authentication": "token"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "user deleted successfully",
+        "data": 1
     }

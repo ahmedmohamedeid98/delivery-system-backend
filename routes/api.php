@@ -119,7 +119,7 @@ Route::get('admin/contact-us', [AdminController::class, 'getContactUs'])->middle
 Route::get('admin/users', [AdminController::class, 'getUsers'])->middleware('auth:api');
 Route::get('admin/transactions', [AdminController::class, 'getTransactions'])->middleware('auth:api');
 Route::get('admin/identities', [AdminController::class, 'getIdentities'])->middleware('auth:api');
-
+Route::delete('admin/user{id?}', [AdminController::class, 'deleteUser'])->middleware('auth:api');
 
 
 
