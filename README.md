@@ -33,6 +33,9 @@ The REST API to the eDelivery system is described below.
 * [get chat channel details](#get-chat-channel-details)
 * [admin: get contact us forms](#admin-get-contact-us)
 * [admin: get users](#admin-get-users)
+* [admin: get transactions](#admin-get-transactions)
+* [admin: get identities](#admin-get-identities)
+* [admin: delete user](#admin-delete-user)
 
 
 ## Get User Address
@@ -510,6 +513,9 @@ The REST API to the eDelivery system is described below.
                     "subject": "can not buy new connects",
                     "message": "hi my namasdsd dkfmdf dlfsd fsd;fldmsf",
                     "created_at": "2022-02-21T00:01:48.000000Z"
+                },
+                {
+                    ...
                 }
             ],
             "paginate": {
@@ -568,6 +574,9 @@ The REST API to the eDelivery system is described below.
                     "email": "ahmed3@gmail.com",
                     "photo_url": "default-profile-image-2122202.png",
                     "created_at": "2022-02-12T17:40:14.000000Z"
+                },
+                {
+                    ...
                 }
             ],
             "paginate": {
@@ -627,3 +636,145 @@ The REST API to the eDelivery system is described below.
 [Back to endpoints list.](#endpoints)
 
 ---
+
+## Admin Get Transactions
+`GET`
+
+    .../api/admin/transactions
+
+### Header
+    {
+        "Authentication": "token"
+    }
+
+### Response
+
+    {
+    "success": true,
+    "message": "success",
+    "data": {
+        "transactions": [
+            {
+                'id': 4,
+                'trans_ref': 'TST2204901064398',
+                'user_id': 1
+                'task_id': null
+                'trans_amount': 50,
+                'trans_currency': 'EGP',
+                'trans_desc': '',
+                'trans_type': 'connects',
+                'res_status': 'A',
+                'res_msg': 'Authorised',
+                'trans_time': '2022-02-18T19:29:14Z',
+                'payment_method': 'MasterCard',
+                'payment_card': '5200 00## #### 0007',
+                'ipn_trace': 'IPNS0003.620FF604.000023E8'
+            },
+            {
+                ...
+            }
+        ],
+        "paginate": {
+            "current_page": 1,
+            "from": null,
+            "last_page": 1,
+            "links": [
+                {
+                    "url": null,
+                    "label": "&laquo; Previous",
+                    "active": false
+                },
+                {
+                    "url": "http://localhost:8000/api/admin/transactions?page=1",
+                    "label": "1",
+                    "active": true
+                },
+                {
+                    "url": null,
+                    "label": "Next &raquo;",
+                    "active": false
+                }
+            ],
+            "path": "http://localhost:8000/api/admin/transactions",
+            "per_page": 5,
+            "to": null,
+            "total": 0
+        }
+    }
+}
+
+## Admin Get Identities
+`GET`
+
+    .../api/admin/identities
+
+### Header
+
+    {
+        "Authentication": "token"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "success",
+        "data": {
+            "identities": [
+                {
+                    "id": 3,
+                    "identity_front": "132501-download.jpeg",
+                    "identity_back": "132501-download (1).jpeg",
+                    "identity_selfy": "132501-download (2).jpeg",
+                    "created_at": "14th of February 2022"
+                },
+                {
+                    ...
+                }
+            ],
+            "paginate": {
+                "current_page": 1,
+                "from": 1,
+                "last_page": 1,
+                "links": [
+                    {
+                        "url": null,
+                        "label": "&laquo; Previous",
+                        "active": false
+                    },
+                    {
+                        "url": "http://localhost:8000/api/admin/identities?page=1",
+                        "label": "1",
+                        "active": true
+                    },
+                    {
+                        "url": null,
+                        "label": "Next &raquo;",
+                        "active": false
+                    }
+                ],
+                "path": "http://localhost:8000/api/admin/identities",
+                "per_page": 5,
+                "to": 4,
+                "total": 4
+            }
+        }
+    }
+
+## Admin Delete User
+`DELETE`
+
+    .../api/admin/user?id=7
+
+### Header
+    {
+        "Authentication": "token"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "user deleted successfully",
+        "data": 1
+    }
