@@ -19,6 +19,7 @@ class IdentityResource extends JsonResource
             'identity_front' => $this->identity_front,
             'identity_back' => $this->identity_back,
             'identity_selfy' => $this->identity_selfy,
+            'verified' => $this->verified,
             'created_at' => $this->human_readable_date(),
             'user' => new UserResource($this->user),
 
