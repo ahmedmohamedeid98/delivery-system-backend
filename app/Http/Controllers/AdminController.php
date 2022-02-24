@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\AdminTaskResource;
 use App\Http\Resources\ContactUsResource;
 use App\Http\Resources\IdentityResource;
 use App\Http\Resources\TaskResource;
@@ -115,7 +116,7 @@ class AdminController extends Controller
             }
         }
         $pages = Task::whereIn('task_status', $task_status)->with(['deliveryLocation', 'targetLocation'])->orderByDesc('created_at')->paginate(15);
-        $data = TaskResource::collection($pages)->response()->getData();
+        $data = AdminTaskResource::collection($pages)->response()->getData();
         return $this->success('success', ['tasks' => $data->data, "paginate" => $data->meta]);
     }
 }
