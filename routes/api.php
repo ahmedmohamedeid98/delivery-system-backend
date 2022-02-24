@@ -11,6 +11,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\IdentityController;
 use App\Http\Controllers\InterviewController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PayTabsGatewayController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublichActionController;
@@ -113,8 +114,8 @@ Route::post('pusher/auth', [ChatsController::class, 'authPusher'])->middleware('
 
 Route::get('channel{id?}', [ChatsController::class, 'getChannelDetails'])->middleware('auth:api');
 Route::get('chat/me/channels', [ChatsController::class, 'getAllMyChatChannels'])->middleware('auth:api');
-
-
+Route::get('notifications', [NotificationController::class, 'getNotifications'])->middleware('auth:api');
+Route::get('notifications/seen', [NotificationController::class, 'markNotificationAsSeen'])->middleware('auth:api');
 Route::get('admin/contact-us', [AdminController::class, 'getContactUs'])->middleware('auth:api');
 Route::get('admin/users', [AdminController::class, 'getUsers'])->middleware('auth:api');
 Route::get('admin/transactions', [AdminController::class, 'getTransactions'])->middleware('auth:api');

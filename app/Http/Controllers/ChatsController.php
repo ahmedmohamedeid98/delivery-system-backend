@@ -53,27 +53,16 @@ class ChatsController extends Controller
     {
         $reciver_id = $request->input('reciver_id');
         $user_id = $request->input('sender_id');
+        $channel_id = $request->input('channel_id');
         $user_id = Auth::user()->id;
-        if ($reciver_id == $user_id) {
-            return $this->failure(['user can not chat with himself!']);
-        }
-        $channelId = $this->getChatChannelId($user_id, $reciver_id);
 
-
-        // $user = User::find($user_id);
-        // $message = $user->messages()->create([
-        //     'message' => $request->input('message')
-        // ]);
-        $message = Message::create([
+        Message::create([
             'sender_id' => $user_id,
             'reciver_id' => $reciver_id,
             'message' => $request->input('message'),
-            'channel_id' => $channelId
+            'channel_id' => $channel_id
         ]);
         // broadcast(new MessageSent($message, $channelId))->toOthers();
-
-        // return ['status' => 'Message Sent!'];
-        // return response($request->all(), 200);
     }
 
 
@@ -119,6 +108,7 @@ class ChatsController extends Controller
                 array_push($details, ['chat_with' => new UserResource($chat_with), 'on_channel_id' => $channel->id]);
             }
         }
+        NotificationController::storeAndPublish('test notification', $user->id);
         return $this->success('success', ['me' => new UserResource($user), "channels" => $details]);
     }
 }

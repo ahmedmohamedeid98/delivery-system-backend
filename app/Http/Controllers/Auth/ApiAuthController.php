@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\Profile;
+use App\Http\Controllers\NotificationController;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
@@ -31,6 +31,7 @@ class ApiAuthController extends Controller
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
+        NotificationController::storeAndPublish('Congratulations ' . $user->name . ', creating account successfully', $user->id);
         return $this->successWithToken($user);
     }
 
