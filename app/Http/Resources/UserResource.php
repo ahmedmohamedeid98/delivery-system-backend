@@ -19,6 +19,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->getEmail(),
             'photo_url' => $this->photo_url,
+            'is_admin' => $this->is_admin,
             'created_at' => $this->created_at
         ];
     }
@@ -26,11 +27,11 @@ class UserResource extends JsonResource
     private function getEmail()
     {
         // check email 
-        if($this->facebook_id == null) {
+        if ($this->facebook_id == null) {
             return $this->email;
         } else {
             $username = explode('@', $this->email)[0];
-            if($username == $this->facebook_id) {
+            if ($username == $this->facebook_id) {
                 return null;
             } else {
                 return $this->email;

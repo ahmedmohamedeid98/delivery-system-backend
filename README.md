@@ -611,6 +611,7 @@ The REST API to the eDelivery system is described below.
                     "name": "ahmed",
                     "email": "ahmed3@gmail.com",
                     "photo_url": "default-profile-image-2122202.png",
+                    "is_admin": 0,
                     "created_at": "2022-02-12T17:40:14.000000Z"
                 },
                 {
