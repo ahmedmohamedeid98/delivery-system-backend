@@ -20,7 +20,8 @@ class UserResource extends JsonResource
             'email' => $this->getEmail(),
             'photo_url' => $this->photo_url,
             'is_admin' => $this->is_admin,
-            'created_at' => $this->created_at
+            'created_at' => $this->created_at,
+            'profile' => new ProfileResource($this->profile),
         ];
     }
 

@@ -77,7 +77,7 @@ class AdminController extends Controller
 
     public function getUsers()
     {
-        $users = User::orderByDesc('created_at')->paginate(5);
+        $users = User::with('profile')->orderByDesc('created_at')->paginate(5);
         $data = UserResource::collection($users)->response()->getData();
         return $this->success('success', ["users" =>  $data->data, "paginate" => $data->meta]);
     }

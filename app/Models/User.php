@@ -59,6 +59,11 @@ class User extends Authenticatable
         return $this->hasMany(AddedTargetLocation::class);
     }
 
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+
     public function human_readable_date()
     { //dddd Do of MMMM YYYY h:mm:ss A
         return Carbon::parse($this->attributes['created_at'])->isoFormat("Do of MMMM YYYY");

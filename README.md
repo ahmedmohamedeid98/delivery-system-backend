@@ -608,12 +608,27 @@ The REST API to the eDelivery system is described below.
         "data": {
             "users": [
                 {
-                    "id": 1,
-                    "name": "ahmed",
-                    "email": "ahmed3@gmail.com",
-                    "photo_url": "default-profile-image-2122202.png",
+                    "id": 9,
+                    "name": "mostafas",
+                    "email": "mostafas@gmail.com",
+                    "photo_url": "063443-man.png",
                     "is_admin": 0,
-                    "created_at": "2022-02-12T17:40:14.000000Z"
+                    "created_at": "2022-02-24T04:59:36.000000Z",
+                    "profile": {
+                        "about": "l,sdlf,slf,s;lf,sd",
+                        "gender": "male",
+                        "identity_status": 0,
+                        "country": "Egypt",
+                        "state": "Ismailia",
+                        "city": "Qantara Gharb",
+                        "phone": "201021545154",
+                        "total_rate": 0,
+                        "success_rate": 0,
+                        "connects": 30,
+                        "earning_amount": 0,
+                        "spent_amount": 0,
+                        "total_orders_amount": 0
+                    }
                 },
                 {
                     ...
