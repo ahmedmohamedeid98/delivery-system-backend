@@ -126,7 +126,7 @@ Route::delete('admin/user{id?}', [AdminController::class, 'deleteUser'])->middle
 Route::post('admin/login', [AdminController::class, 'login']);
 Route::get('admin/tasks', [AdminController::class, 'getTasks'])->middleware(['auth:api', 'admin']);
 Route::post('admin/assign-privilege', [AdminController::class, 'assignPrivilege'])->middleware(['auth:api', 'admin']);
-
+Route::post('admin/identity', [AdminController::class, 'verifyIdentity'])->middleware(['auth:api', 'admin']);
 
 
 

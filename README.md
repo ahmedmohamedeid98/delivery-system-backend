@@ -41,7 +41,7 @@ The REST API to the eDelivery system is described below.
 * [admin: delete user](#admin-delete-user)
 * [admin: get task list](#admin-get-task-list)
 * [admin: assign privilege](#admin-assign-privilege)
-
+* [admin: verify identity](#admin-verify-identity)
 
 ## Get User Address
 `GET`
@@ -786,6 +786,7 @@ The REST API to the eDelivery system is described below.
                     "identity_back": "194436-profile.png",
                     "identity_selfy": "194436-profile.png",
                     "created_at": "20th of February 2022",
+                    "verified": 0 or 1
                     "user": {
                         "id": 3,
                         "name": "Osama",
@@ -977,3 +978,29 @@ The REST API to the eDelivery system is described below.
 [Back to endpoints list.](#endpoints)
 
 ---
+
+## Admin Verify Identity
+`POST`
+
+    .../api/admin/identity
+
+### Header
+
+    {
+        "Authentication": "token"
+    }
+
+### Body
+
+    {
+        "user_id" : 2,
+        "identity_id" : 7,
+        "verify" : true(verify) or false(reject)
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "verify identity successfully!"
+    }

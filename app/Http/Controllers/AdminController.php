@@ -10,11 +10,13 @@ use App\Http\Resources\TransactionResource;
 use App\Http\Resources\UserResource;
 use App\Models\ContactUs;
 use App\Models\Identity;
+use App\Models\Profile;
 use App\Models\Task;
 use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -94,6 +96,34 @@ class AdminController extends Controller
         $identities = Identity::with('user')->orderByDesc('created_at')->paginate(5);
         $data = IdentityResource::collection($identities)->response()->getData();
         return $this->success('success', ["identities" => $data->data, "paginate" => $data->meta]);
+    }
+
+    public function verifyIdentity(Request $request)
+    {
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            "user_id" => ['required', 'integer', 'exists:users'],
+            "identity_id" => ['required', 'integer', 'exists:identities'],
+            "verify" => ['required', 'boolean']
+        ]);
+
+        if ($validator->failed()) {
+            return $this->failure([$validator->errors()->all()]);
+        }
+
+        if ($data['verify'] == true) {
+            Profile::where('user_id', $data['user_id'])->update(['identity_status' => true]);
+            Identity::where('id', $data['identity_id'])->update(['verified' => true]);
+            NotificationController::storeAndPublish('Congratulations, your identities verified successfully', $data['user_id']);
+            return $this->success('verify identity successfully!');
+        } else {
+            return ['ht' => true];
+            $deleted = Identity::where('id', $data['identity_id'])->delete();
+            if ($deleted) {
+                NotificationController::storeAndPublish('Your identity was rejected, please provide valid identity and try again.', $data['user_id']);
+                return $this->failure(['failed to verify identity']);
+            }
+        }
     }
 
     public function deleteUser(Request $request)
