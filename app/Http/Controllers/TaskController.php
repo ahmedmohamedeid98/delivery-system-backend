@@ -92,6 +92,7 @@ class TaskController extends Controller
     {
         $task = $request->all();
         $user_id = Auth::user()->id;
+        $complete_code = $this->generateRandomCompleteCode();
         try {
             $task = Task::create([
                 'user_id' => $user_id,
@@ -108,10 +109,17 @@ class TaskController extends Controller
                 'delivery_date' => $task['delivery_date'],
                 'delivery_location_id' => $task['delivery_location_id'],
                 'target_location_id' => $task['target_location_id'],
+                'complete_code' => $complete_code,
             ]);
             return $this->success('task created successfully!', new TaskResource($task));
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
+    }
+
+
+    private function generateRandomCompleteCode()
+    {
+        return strval(random_int(123456, 999999));
     }
 }

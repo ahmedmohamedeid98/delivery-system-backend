@@ -52,6 +52,7 @@ class Task extends Model
         'target_location_id',
         'paid_service',
         'paid_order',
-        'paid_both'
+        'paid_both',
+        'complete_code'
     ];
 }
