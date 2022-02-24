@@ -41,6 +41,24 @@ class ProfileController extends Controller
 
         return $data;
     }
+
+
+    public function changePhoto(Request $request)
+    {
+        $picture = null;
+        if ($request->hasFile('photo')) {
+            $picture = $this->store($request->file('photo'));
+        }
+
+        if ($picture) {
+            $user_id = Auth::user()->id;
+            User::find($user_id)->update(['photo_url' => $picture]);
+            return $this->success('update photo successfully', ['photo_url' => $picture]);
+        } else {
+            return $this->failure(['something want wrong']);
+        }
+    }
+
     public function edit(Request $req)
     {
         //$file= $req->input('file');
@@ -60,15 +78,13 @@ class ProfileController extends Controller
         if (!$profile) {
             try {
                 $profile = Profile::create([
-                    'user_id'=>Auth::user()->id,
+                    'user_id' => Auth::user()->id,
                     'about' => $req->about,
                     'gender' => $req->gender,
                     'state' => $req->state,
                     'city' => $req->city,
                     'phone' => $req->phone,
                 ]);
-
-
             } catch (Exception $e) {
                 return $this->failure([$e->getMessage()]);
             }
@@ -154,6 +170,7 @@ class ProfileController extends Controller
         });
         return $this->success("update address successfully", new UserAddressResource($profile));
     }
+
     private function store($file)
     {
         $filename  = $file->getClientOriginalName();

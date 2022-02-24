@@ -62,6 +62,7 @@ Route::get('identity/can-upload', [IdentityController::class, 'canUpload'])->mid
 // profile
 Route::get('user/showProfile{id?}', [ProfileController::class, 'showAnotherUser'])->middleware('auth:api');
 Route::get('user/profile', [ProfileController::class, 'show'])->middleware('auth:api');
+Route::post('user/profile-photo', [ProfileController::class, 'changePhoto'])->middleware('auth:api');
 Route::post('user/edit-profile', [ProfileController::class, 'edit'])->middleware('auth:api');
 Route::get('user/address', [ProfileController::class, 'getAddress'])->middleware("auth:api");
 Route::post('user/address', [ProfileController::class, 'updateAddress'])->middleware("auth:api");
