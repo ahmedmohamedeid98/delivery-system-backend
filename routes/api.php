@@ -122,7 +122,7 @@ Route::get('admin/users', [AdminController::class, 'getUsers'])->middleware('aut
 Route::get('admin/transactions', [AdminController::class, 'getTransactions'])->middleware('auth:api');
 Route::get('admin/identities', [AdminController::class, 'getIdentities'])->middleware('auth:api');
 Route::delete('admin/user{id?}', [AdminController::class, 'deleteUser'])->middleware('auth:api');
-
+Route::post('admin/login', [AdminController::class, 'login']);
 
 
 

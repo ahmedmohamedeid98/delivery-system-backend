@@ -49,7 +49,7 @@ class Controller extends BaseController
     {
         return response([
             'success' => false,
-            'errors' => 'unauthorized operation!',
+            'errors' => ['unauthorized operation!'],
         ], 401);
     }
 
