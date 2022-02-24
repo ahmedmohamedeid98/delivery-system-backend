@@ -36,6 +36,7 @@ class MyTaskResource extends JsonResource
             "paid_order" => $this->paid_order,
             "paid_both" => $this->paid_both,
             "feedback" => $this->feedback,
+            "complete_code" => $this->complete_code,
             "offers" => MyTaskOffersResource::collection($this->offers),
         ];
     }
