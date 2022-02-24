@@ -21,6 +21,11 @@ class Identity extends Model
         'identity_selfy'
     ];
 
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
+
     public function human_readable_date()
     { //dddd Do of MMMM YYYY h:mm:ss A
         return Carbon::parse($this->attributes['created_at'])->isoFormat("Do of MMMM YYYY");

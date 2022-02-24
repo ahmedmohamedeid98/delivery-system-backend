@@ -20,6 +20,8 @@ class IdentityResource extends JsonResource
             'identity_back' => $this->identity_back,
             'identity_selfy' => $this->identity_selfy,
             'created_at' => $this->human_readable_date(),
+            'user' => new UserResource($this->user),
+
         ];
     }
 }

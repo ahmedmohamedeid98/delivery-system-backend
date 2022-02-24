@@ -761,11 +761,19 @@ The REST API to the eDelivery system is described below.
         "data": {
             "identities": [
                 {
-                    "id": 3,
-                    "identity_front": "132501-download.jpeg",
-                    "identity_back": "132501-download (1).jpeg",
-                    "identity_selfy": "132501-download (2).jpeg",
-                    "created_at": "14th of February 2022"
+                    "id": 7,
+                    "identity_front": "194436-user (1).png",
+                    "identity_back": "194436-profile.png",
+                    "identity_selfy": "194436-profile.png",
+                    "created_at": "20th of February 2022",
+                    "user": {
+                        "id": 3,
+                        "name": "Osama",
+                        "email": "osama@gmail.com",
+                        "photo_url": "default-profile-image-2122202.png",
+                        "is_admin": 0,
+                        "created_at": "2022-02-14T02:06:31.000000Z"
+                    }
                 },
                 {
                     ...

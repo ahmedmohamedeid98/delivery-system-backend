@@ -90,7 +90,7 @@ class AdminController extends Controller
 
     public function getIdentities()
     {
-        $identities = Identity::orderByDesc('created_at')->paginate(5);
+        $identities = Identity::with('user')->orderByDesc('created_at')->paginate(5);
         $data = IdentityResource::collection($identities)->response()->getData();
         return $this->success('success', ["identities" => $data->data, "paginate" => $data->meta]);
     }
