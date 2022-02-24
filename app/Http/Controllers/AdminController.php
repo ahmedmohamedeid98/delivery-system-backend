@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 use PHPUnit\Framework\Constraint\IsNull;
 
 class AdminController extends Controller
@@ -118,5 +119,26 @@ class AdminController extends Controller
         $pages = Task::whereIn('task_status', $task_status)->with(['deliveryLocation', 'targetLocation'])->orderByDesc('created_at')->paginate(15);
         $data = AdminTaskResource::collection($pages)->response()->getData();
         return $this->success('success', ['tasks' => $data->data, "paginate" => $data->meta]);
+    }
+
+    public function assignPrivilege(Request $request)
+    {
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            'privilege' => ['required', 'integer', Rule::in([0, 1, 2, 3, 4])],
+            'user_id' => ['required', 'integer', 'exists:users'],
+        ]);
+
+        if ($validator->failed()) {
+            return $this->failure($validator->errors()->all());
+        }
+
+        $isUpdated = User::where('id', $data['user_id'])->update(['is_admin' => $request['privilege']]);
+
+        if ($isUpdated) {
+            return $this->success('change privilege successfully', ['updated' => $isUpdated]);
+        } else {
+            return $this->failure(['failed to update privilege']);
+        }
     }
 }

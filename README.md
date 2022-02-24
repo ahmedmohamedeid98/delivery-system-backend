@@ -39,7 +39,8 @@ The REST API to the eDelivery system is described below.
 * [admin: get transactions](#admin-get-transactions)
 * [admin: get identities](#admin-get-identities)
 * [admin: delete user](#admin-delete-user)
-* [admin: get task list]("admin-get-task-list)
+* [admin: get task list](#admin-get-task-list)
+* [admin: assign privilege](#admin-assign-privilege)
 
 
 ## Get User Address
@@ -742,6 +743,10 @@ The REST API to the eDelivery system is described below.
     }
 }
 
+[Back to endpoints list.](#endpoints)
+
+---
+
 ## Admin Get Identities
 `GET`
 
@@ -807,6 +812,11 @@ The REST API to the eDelivery system is described below.
             }
         }
     }
+
+
+[Back to endpoints list.](#endpoints)
+
+---
 
 ## Admin Delete User
 `DELETE`
@@ -914,3 +924,41 @@ The REST API to the eDelivery system is described below.
             }
         }
     }   
+
+
+[Back to endpoints list.](#endpoints)
+
+---
+
+## Admin Assign Privilege
+`POST`
+
+    .../api/admin/assign-privilege
+
+### Header
+    
+    {
+        "Authentication" : "token"
+    }
+
+### Body
+    
+    {
+        "privilege": 0 or 1 or 2 or 3 or 4,
+        "user_id": 3
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "change privilege successfully",
+        "data": {
+            "updated": 1
+        }
+    }
+
+
+[Back to endpoints list.](#endpoints)
+
+---
