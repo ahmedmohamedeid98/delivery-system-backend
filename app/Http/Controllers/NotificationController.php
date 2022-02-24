@@ -13,7 +13,7 @@ class NotificationController extends Controller
     public function getNotifications()
     {
         $user_id = Auth::user()->id;
-        $notifications = Notification::orderByDesc('created_at')->where('user_id', $user_id)->get();
+        $notifications = Notification::orderByDesc('created_at')->where('user_id', $user_id)->limit(10)->get();
         return $this->success('success', NotificationResource::collection($notifications));
     }
 
