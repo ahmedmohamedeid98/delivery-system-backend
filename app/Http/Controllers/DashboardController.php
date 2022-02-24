@@ -87,7 +87,7 @@ class DashboardController extends Controller
             return $this->failure(['invalid task id']);
         }
         Task::find($task_id)->delete();
-        return $this->success('task deleted successfully!');
+        return $this->success('Task deleted successfully!');
     }
 
 
@@ -100,8 +100,21 @@ class DashboardController extends Controller
         try {
             $task = Task::with('deliveryLocation','targetLocation')->where('id', $task_id)->get();
             return $this->success('get Task successfully', $task);
-        } catch (Exception $e) {
-            return $this->failure([$e->getMessage()]);
+        } catch (Exception $ex) {
+            return $this->failure([$ex->getMessage()]);
+        }
+    }
+
+    public function completeTask(Request $request){
+        $task_id = $request->query('id');
+        if (!$task_id || !Task::find($task_id)) {
+            return $this->failure(['invalid task id']);
+        }
+        try {
+            Task::where('id', $task_id)->update(['task_status' => 2]);
+            return $this->success('Task completed successfully!');
+        } catch (Exception $ex) {
+            return $this->failure([$ex->getMessage()]);
         }
     }
 

@@ -73,7 +73,7 @@ Route::delete('myTask{id?}', [DashboardController::class, 'deleteTask'])->middle
 
 Route::get('viewTask{id?}', [DashboardController::class, 'getTask'])->middleware('auth:api');
 
-
+Route::post('completeTask{id?}', [DashboardController::class, 'completeTask'])->middleware('auth:api');
 
 
 
