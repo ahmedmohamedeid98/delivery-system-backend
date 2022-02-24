@@ -31,6 +31,9 @@ The REST API to the eDelivery system is described below.
 * [get tasks which created by user](#get-created-tasks-by-user)
 * [get tasks which applied in by user](#get-tasks-applied-in-by-user)
 * [get chat channel details](#get-chat-channel-details)
+---
+
+* [admin: login](#admin-login)
 * [admin: get contact us forms](#admin-get-contact-us)
 * [admin: get users](#admin-get-users)
 * [admin: get transactions](#admin-get-transactions)
@@ -483,6 +486,40 @@ The REST API to the eDelivery system is described below.
             "on_channel_id": 1
         }
     }
+
+[Back to endpoints list.](#endpoints)
+
+---
+
+## Admin Login
+`POST`
+
+    .../api/admin/login
+
+### body
+    {
+        "email" : "example@example.com",
+        "password" : "454551545"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "login successfully",
+        "token": "eyJ0eXAiOiJK...",
+        "has_address": true,
+        "token_expires_at": "2023-02-24T18:07:43.000000Z",
+        "user": {
+            "id": 1,
+            "name": "ahmed",
+            "email": "ahmed3@gmail.com",
+            "photo_url": "default-profile-image-2122202.png",
+            "created_at": "2022-02-12T17:40:14.000000Z"
+        }
+    }
+    
+
 
 [Back to endpoints list.](#endpoints)
 

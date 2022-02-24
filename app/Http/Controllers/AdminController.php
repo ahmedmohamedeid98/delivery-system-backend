@@ -13,6 +13,8 @@ use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
@@ -22,6 +24,30 @@ class AdminController extends Controller
             return $this->success("user is admin", ["is_admin" => true]);
         } else {
             return $this->success("user is not admin", ["is_admin" => false]);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|email|max:255',
+            'password' => 'required|string|min:8',
+        ]);
+        if ($validator->fails()) {
+            return $this->failure($validator->errors()->all());
+        }
+        $user = User::where('email', $request->email)->first();
+        if ($user) {
+            if (!$user->is_admin) {
+                return $this->unauthorizedFailure();
+            }
+            if (Hash::check($request->password, $user->password)) {
+                return $this->successWithToken($user);
+            } else {
+                return $this->failure(['Invalid email or password']);
+            }
+        } else {
+            return $this->failure(['User does not exist']);
         }
     }
 
