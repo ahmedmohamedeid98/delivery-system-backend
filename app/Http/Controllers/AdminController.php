@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ContactUsResource;
 use App\Http\Resources\IdentityResource;
+use App\Http\Resources\TaskResource;
 use App\Http\Resources\TransactionResource;
 use App\Http\Resources\UserResource;
 use App\Models\ContactUs;
@@ -15,6 +16,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PHPUnit\Framework\Constraint\IsNull;
 
 class AdminController extends Controller
 {
@@ -53,9 +55,6 @@ class AdminController extends Controller
 
     public function deleteTask(Request $request)
     {
-        if (Auth::user()->is_admin == false) {
-            return $this->unauthorizedFailure();
-        }
         $task_id = $request->query('id');
         if (!$task_id || !Task::find($task_id)) {
             return $this->failure(['invalid task id']);
@@ -69,9 +68,6 @@ class AdminController extends Controller
 
     public function getContactUs()
     {
-        if (Auth::user()->is_admin == false) {
-            return $this->unauthorizedFailure();
-        }
         $contactus = ContactUs::orderByDesc('created_at')->paginate(5);
         $data = ContactUsResource::collection($contactus)->response()->getData();
         return $this->success('success', ["forms" =>  $data->data, "paginate" => $data->meta]);
@@ -79,9 +75,6 @@ class AdminController extends Controller
 
     public function getUsers()
     {
-        if (Auth::user()->is_admin == false) {
-            return $this->unauthorizedFailure();
-        }
         $users = User::orderByDesc('created_at')->paginate(5);
         $data = UserResource::collection($users)->response()->getData();
         return $this->success('success', ["users" =>  $data->data, "paginate" => $data->meta]);
@@ -89,9 +82,6 @@ class AdminController extends Controller
 
     public function getTransactions()
     {
-        if (Auth::user()->is_admin == false) {
-            return $this->unauthorizedFailure();
-        }
         $transactions = Transaction::orderByDesc('created_at')->paginate(5);
         $data = TransactionResource::collection($transactions)->response()->getData();
         return $this->success('success', ["transactions" =>  $data->data, "paginate" => $data->meta]);
@@ -99,9 +89,6 @@ class AdminController extends Controller
 
     public function getIdentities()
     {
-        if (Auth::user()->is_admin == false) {
-            return $this->unauthorizedFailure();
-        }
         $identities = Identity::orderByDesc('created_at')->paginate(5);
         $data = IdentityResource::collection($identities)->response()->getData();
         return $this->success('success', ["identities" => $data->data, "paginate" => $data->meta]);
@@ -109,9 +96,6 @@ class AdminController extends Controller
 
     public function deleteUser(Request $request)
     {
-        if (Auth::user()->is_admin == false) {
-            return $this->unauthorizedFailure();
-        }
         $user_id = $request->query('id');
         $res = User::where('id', $user_id)->delete();
         if (!$res) {
@@ -119,5 +103,19 @@ class AdminController extends Controller
         }
 
         return $this->success('user deleted successfully', $res);
+    }
+
+    public function getTasks(Request $request)
+    {
+        $task_status = [0, 1, 2];
+        if ($request->query('task_status')) {
+            $status = $request->query('task_status');
+            if (is_numeric($status)) {
+                $task_status = [$status];
+            }
+        }
+        $pages = Task::whereIn('task_status', $task_status)->with(['deliveryLocation', 'targetLocation'])->orderByDesc('created_at')->paginate(15);
+        $data = TaskResource::collection($pages)->response()->getData();
+        return $this->success('success', ['tasks' => $data->data, "paginate" => $data->meta]);
     }
 }

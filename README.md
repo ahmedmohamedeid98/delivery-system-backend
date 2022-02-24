@@ -39,6 +39,7 @@ The REST API to the eDelivery system is described below.
 * [admin: get transactions](#admin-get-transactions)
 * [admin: get identities](#admin-get-identities)
 * [admin: delete user](#admin-delete-user)
+* [admin: get task list]("admin-get-task-list)
 
 
 ## Get User Address
@@ -815,3 +816,92 @@ The REST API to the eDelivery system is described below.
         "message": "user deleted successfully",
         "data": 1
     }
+
+## Admin Get Task list
+`GET`
+
+    .../api/admin/tasks
+
+### (Optional) query
+
+    .../api/admin/tasks?task_status=0 or 1 or 2
+    0: open tasks
+    1: in progress tasks
+    2: completed tasks
+
+### Header 
+    {
+        "Authentication": "token"
+    }
+
+### Response
+
+        {
+            "success": true,
+            "message": "success",
+            "data": {
+                "tasks": [
+                    {
+                        "id": 14,
+                        "title": "sdl,sdl;,sdlf,sd",
+                        "task_status": 0,
+                        "description": "s;ldflsd,fsdl,f;    sdl,fsdl,fsd;lf,sd;,fsd;f,sd;f,sdf,d",
+                    "budget": 150,
+                        "order_cost": 0,
+                        "payment_method": 1,
+                        "required_invoice": 0,
+                        "note": ";s,dlf,sd;f,ds",
+                        "order_status": 0,
+                        "travel_status": 0,
+                        "delivery_date": "2022-03-03    00:00:00",
+                    "user_id": 1,
+                        "delivery_location_id": 7,
+                        "target_location_id": 18,
+                        "created_at":   "2022-02-24T01:18:12.000000Z",
+                    "updated_at":   "2022-02-24T01:18:12.000000Z",
+                    "paid_service": null,
+                        "paid_order": null,
+                        "paid_both": null,
+                        "delivery_location": {
+                            "id": 7,
+                            "country": "Egypt",
+                            "state": "Red Sea",
+                            "city": "Safaga",
+                            "streat": "streat name",
+                            "address_note": "note",
+                            "longitude": 32.2767202,
+                            "latitude": 30.6107974
+                        }
+                    },
+                    {
+                        ...
+                    }
+                ],
+                "paginate": {
+                    "current_page": 1,
+                    "from": 1,
+                    "last_page": 1,
+                    "links": [
+                        {
+                            "url": null,
+                            "label": "&laquo; Previous",
+                            "active": false
+                        },
+                        {
+                            "url": "http://localhost:8000/  api/admin/tasks?page=1",
+                        "label": "1",
+                            "active": true
+                        },
+                        {
+                            "url": null,
+                            "label": "Next &raquo;",
+                            "active": false
+                        }
+                    ],
+                    "path": "http://localhost:8000/api/ admin/tasks",
+                "per_page": 15,
+                    "to": 5,
+                    "total": 5
+            }
+        }
+    }   

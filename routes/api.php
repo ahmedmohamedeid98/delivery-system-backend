@@ -17,6 +17,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublichActionController;
 use App\Http\Controllers\StaticDataController;
 use App\Http\Controllers\TaskController;
+use App\Http\Middleware\admin;
 use App\Models\ChatChannel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -117,13 +118,13 @@ Route::get('channel{id?}', [ChatsController::class, 'getChannelDetails'])->middl
 Route::get('chat/me/channels', [ChatsController::class, 'getAllMyChatChannels'])->middleware('auth:api');
 Route::get('notifications', [NotificationController::class, 'getNotifications'])->middleware('auth:api');
 Route::get('notifications/seen', [NotificationController::class, 'markNotificationAsSeen'])->middleware('auth:api');
-Route::get('admin/contact-us', [AdminController::class, 'getContactUs'])->middleware('auth:api');
-Route::get('admin/users', [AdminController::class, 'getUsers'])->middleware('auth:api');
-Route::get('admin/transactions', [AdminController::class, 'getTransactions'])->middleware('auth:api');
-Route::get('admin/identities', [AdminController::class, 'getIdentities'])->middleware('auth:api');
-Route::delete('admin/user{id?}', [AdminController::class, 'deleteUser'])->middleware('auth:api');
+Route::get('admin/contact-us', [AdminController::class, 'getContactUs'])->middleware(['auth:api', 'admin']);
+Route::get('admin/users', [AdminController::class, 'getUsers'])->middleware(['auth:api', 'admin']);
+Route::get('admin/transactions', [AdminController::class, 'getTransactions'])->middleware(['auth:api', 'admin']);
+Route::get('admin/identities', [AdminController::class, 'getIdentities'])->middleware(['auth:api', 'admin']);
+Route::delete('admin/user{id?}', [AdminController::class, 'deleteUser'])->middleware(['auth:api', 'admin']);
 Route::post('admin/login', [AdminController::class, 'login']);
-
+Route::get('admin/tasks', [AdminController::class, 'getTasks'])->middleware(['auth:api', 'admin']);
 
 
 
