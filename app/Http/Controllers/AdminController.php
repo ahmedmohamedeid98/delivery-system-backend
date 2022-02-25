@@ -72,7 +72,7 @@ class AdminController extends Controller
         try {
             $user = User::where('email', $request->email)->first();
             if ($user) {
-                if (!$user->is_admin) {
+                if ($user->is_admin) {
                     return $this->failure(['already registered']);
                 }
                 if (Hash::check($request->password, $user->password)) {
