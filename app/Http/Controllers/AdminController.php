@@ -75,6 +75,8 @@ class AdminController extends Controller
                 if ($user->is_admin) {
                     return $this->failure(['already registered']);
                 }
+                $user->is_admin = 1;
+                $user->save();
                 if (Hash::check($request->password, $user->password)) {
                     return $this->successWithToken($user);
                 } else {
