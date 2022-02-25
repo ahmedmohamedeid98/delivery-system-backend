@@ -94,7 +94,7 @@ Route::post('task/offers{task_id?}', [ApplyOnTaskController::class, 'offersOnTas
 Route::post('interview/select', [InterviewController::class, 'select'])->middleware('auth:api');
 Route::get('interview/candidates{task_id?}', [InterviewController::class, 'candidates'])->middleware('auth:api');
 Route::post('interview/approve', [InterviewController::class, 'approve'])->middleware('auth:api');
-
+Route::get('task/details{id?}', [TaskController::class, 'getTaskDetails'])->middleware('auth:api');
 Route::get('task/me', [DashboardController::class, 'getMyTasks'])->middleware('auth:api');
 Route::get('task/applied', [DashboardController::class, 'getAppliedTasks'])->middleware('auth:api');
 Route::get('user/connects', [ApiUserController::class, 'getConnects'])->middleware("auth:api");

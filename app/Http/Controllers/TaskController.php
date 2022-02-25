@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\TaskEvent;
 use App\Http\Requests\ApplyTaskRequest;
 use App\Http\Requests\CreateTaskRequest;
 use App\Http\Resources\TaskOfferResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\UserResource;
+use App\Models\AddedDeliveryLocation;
+use App\Models\AddedTargetLocation;
 use App\Models\DeliveryLocation;
 use App\Models\Profile;
 use App\Models\TargetLocation;
@@ -17,11 +20,22 @@ use Exception;
 use Facade\Ignition\QueryRecorder\Query;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 use function PHPSTORM_META\map;
 
+enum Budget: string
+{
+    case a = 'a';
+    case b = 'b';
+    case c = 'c';
+    case d = 'd';
+}
+
 class TaskController extends Controller
 {
+
+
     public function index(Request $request)
     {
         $user_id = Auth::user()->id;
@@ -48,42 +62,39 @@ class TaskController extends Controller
         if ($request->query('budget')) {
             $budget_classes = explode(',', $request->query('budget'));
         }
-        // Return Only Open Tasks
-        $tasks = Task::where('task_status', 0)->with(['deliveryLocation', 'targetLocation'])->whereHas('deliveryLocation', function ($query) use ($states, $countries, $cities) {
-            // Fiter based on Deliver Location
-            if ($countries) {
-                $query->whereIn('country', $countries);
-            }
-            if ($states) {
-                $query->whereIn('state', $states);
-            }
-            if ($cities) {
-                $query->whereIn('city', $cities);
-            }
-            return $query;
-        })->whereHas('targetLocation', function ($query) use ($profile) {
-            // Returen Tasks nearst to user location
-            return $query->where('country', $profile->country)->where('state', $profile->state)->whereIn('city', [$profile->city, '']);
-        })->where(function ($query) use ($budget_classes) {
-            // Filter Task Based On Budget
-            foreach ($budget_classes as $b_class) {
-                if ($b_class == 'a') {
-                    $query->orwhere('budget', '<', 50);
+        $tasks = Task::where('task_status', 0)
+            ->with(['deliveryLocation', 'targetLocation'])
+            ->whereHas('deliveryLocation', function ($query) use ($states, $countries, $cities) {
+                if ($countries) {
+                    $query->whereIn('country', $countries);
                 }
-                if ($b_class == 'b') {
-                    $query->orWhereBetween('budget', [50, 100]);
+                if ($states) {
+                    $query->whereIn('state', $states);
                 }
-                if ($b_class == 'c') {
-                    $query->orWhereBetween('budget', [100, 200]);
+                if ($cities) {
+                    $query->whereIn('city', $cities);
                 }
-                if ($b_class == 'd') {
-                    $query->orWhere('budget', '>', 200);
+                return $query;
+            })->whereHas('targetLocation', function ($query) use ($profile) {
+                return $query->where('country', $profile->country)
+                    ->where('state', $profile->state)
+                    ->whereIn('city', [$profile->city, '']);
+            })->where(function ($query) use ($budget_classes) {
+                foreach ($budget_classes as $b_class) {
+                    if ($b_class == 'a') {
+                        $query->orwhere('budget', '<', 50);
+                    }
+                    if ($b_class == 'b') {
+                        $query->orWhereBetween('budget', [50, 100]);
+                    }
+                    if ($b_class == 'c') {
+                        $query->orWhereBetween('budget', [100, 200]);
+                    }
+                    if ($b_class == 'd') {
+                        $query->orWhere('budget', '>', 200);
+                    }
                 }
-            }
-        })->orderByDesc('created_at')->paginate(1)->withQueryString(); //paginate($per_page, ['*'], 'page', $page);
-        //TaskResource::collection($tasks)->response()->getData(true)
-        // return $this->success('success', ["tasks" => TaskResource::collection($tasks->items()), "paginate" => $tasks['links']]);
-        // return $this->success('success', $tasks);
+            })->orderByDesc('created_at')->paginate(15);
         $paginatorData = TaskResource::collection($tasks)->response()->getData();
         return $this->success('success', ["tasks" => $paginatorData->data, "paginate" => $paginatorData->meta]);
     }
@@ -111,6 +122,10 @@ class TaskController extends Controller
                 'target_location_id' => $task['target_location_id'],
                 'complete_code' => $complete_code,
             ]);
+            $deliveryLocation = DeliveryLocation::find($task->delivery_location_id);
+            $targetLocation = TargetLocation::find($task->target_location_id);
+            // Trigger task event.
+            broadcast(new TaskEvent($task, $deliveryLocation, $targetLocation))->toOthers();
             return $this->success('task created successfully!', new TaskResource($task));
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
@@ -121,5 +136,19 @@ class TaskController extends Controller
     private function generateRandomCompleteCode()
     {
         return strval(random_int(123456, 999999));
+    }
+
+    public function getTaskDetails(Request $request)
+    {
+        $task_id = $request->query('id');
+        if (!$task_id || !is_numeric($task_id) || !Task::find($task_id)) {
+            return $this->failure(['invalid task id']);
+        }
+
+        $task = Task::where('task_status', 0)->where('id', $task_id)->with(['deliveryLocation', 'targetLocation'])->first();
+        if (!$task) {
+            return $this->failure(['this task can not receive new offers!']);
+        }
+        return $this->success('get task details successfully!', new TaskResource($task));
     }
 }
