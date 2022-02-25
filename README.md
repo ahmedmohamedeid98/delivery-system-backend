@@ -27,10 +27,17 @@ The REST API to the eDelivery system is described below.
 * [contact us - Post](#contact-us)
 * [load image from server](#load-image-from-server)
 * [is user admin](#is-user-admin)
-* [delete task](#delete-task)
-* [get tasks which created by user](#get-created-tasks-by-user)
-* [get tasks which applied in by user](#get-tasks-applied-in-by-user)
-* [get chat channel details](#get-chat-channel-details)
+
+---
+* [task: create new task](#create-new-task)
+* [task: get tasks list](#fetch-task-list)
+* [task: get task details](#get-task-details)
+* [task: delete task (admin privilege)](#delete-task)
+* [task: get tasks which created by user](#get-created-tasks-by-user)
+* [task: get tasks which applied in by user](#get-tasks-applied-in-by-user)
+
+---
+* [chat: get chat channel details](#get-chat-channel-details)
 ---
 
 * [admin: login](#admin-login)
@@ -288,6 +295,75 @@ The REST API to the eDelivery system is described below.
 
 ---
 
+## Create New Task
+`POST`
+
+    .../api/task
+
+### Header
+
+    {
+        "Authentication" : "token"
+    }
+
+### Body
+
+    {
+	    "title":"task title...",
+	    "task_status":1,
+	    "description":"task description...",
+	    "budget": 200,
+        "payment_method": 2,
+        "required_invoice": 1,
+        "order_cost": 23000,
+        "note": "it must me original",
+        "delivery_date": "2022-02-15 00:00:00",
+        "delivery_location_id": 2,
+        "target_location_id": 1
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "task created successfully!",
+        "data": {
+            "id": 26,
+            "title": "Buy Iphone for me",
+            "task_status": 0,
+            "description": "my first task Lorem Ipsum is simplk",
+            "budget": 200,
+            "order_cost": 23000,
+            "payment_method": 1,
+            "required_invoice": 1,
+            "note": "it must me original",
+            "order_status": 0,
+            "travel_status": 0,
+            "delivery_date": "2022-02-15 00:00:00",
+            "user_id": 2,
+            "delivery_location_id": 5,
+            "target_location_id": 16,
+            "created_at": "2022-02-25T18:02:09.000000Z",
+            "updated_at": "2022-02-25T18:02:09.000000Z",
+            "paid_service": null,
+            "paid_order": null,
+            "paid_both": null,
+            "delivery_location": {
+                "id": 5,
+                "country": "Egypt",
+                "state": "Cairo",
+                "city": "Tebin",
+                "streat": "25 st elwahaat",
+                "address_note": "my address note",
+                "longitude": 32.2767202,
+                "latitude": 30.6107974
+            }
+        }
+    }
+
+[Back to endpoints list.](#endpoints)
+
+---
 ## Delete Task
 `DELETE`
 
