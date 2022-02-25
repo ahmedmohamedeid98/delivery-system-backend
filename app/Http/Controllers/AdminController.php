@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\AdminTaskResource;
+use App\Http\Resources\AdminUserResource;
 use App\Http\Resources\ContactUsResource;
 use App\Http\Resources\IdentityResource;
 use App\Http\Resources\TaskResource;
@@ -14,6 +15,7 @@ use App\Models\Profile;
 use App\Models\Task;
 use App\Models\Transaction;
 use App\Models\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -57,6 +59,36 @@ class AdminController extends Controller
         }
     }
 
+    public function signUp(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'email' => 'required|string|exists:users',
+            'password' => 'required|string|min:8',
+            'secret_key' => ['required', Rule::in([env('ADMIN_PANNEL_SECRET_KEY')])],
+        ]);
+        if ($validator->fails()) {
+            return $this->failure($validator->errors()->all());
+        }
+        try {
+            $user = User::where('email', $request->email)->first();
+            if ($user) {
+                if (!$user->is_admin) {
+                    return $this->failure(['already registered']);
+                }
+                if (Hash::check($request->password, $user->password)) {
+                    return $this->successWithToken($user);
+                } else {
+                    return $this->failure(['Invalid email or password']);
+                }
+            } else {
+                return $this->failure(['account does not exist']);
+            }
+        } catch (Exception $e) {
+            return $this->failure([$e->getMessage()]);
+        }
+        return $this->successWithToken($user);
+    }
+
     public function deleteTask(Request $request)
     {
         $task_id = $request->query('id');
@@ -80,7 +112,7 @@ class AdminController extends Controller
     public function getUsers()
     {
         $users = User::with('profile')->orderByDesc('created_at')->paginate(5);
-        $data = UserResource::collection($users)->response()->getData();
+        $data = AdminUserResource::collection($users)->response()->getData();
         return $this->success('success', ["users" =>  $data->data, "paginate" => $data->meta]);
     }
 
