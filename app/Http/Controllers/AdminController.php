@@ -171,7 +171,11 @@ class AdminController extends Controller
         $data = $request->all();
         $validator = Validator::make($data, [
             'privilege' => ['required', 'integer', Rule::in([0, 1, 2, 3, 4])],
-            'user_id' => ['required', 'integer', 'exists:users'],
+            'user_id' => ['required', 'integer', function ($attr, $val, $fail) {
+                if (count(User::where('id', $val)->get()) == 0) {
+                    $fail('The ' . $attr . ' is invalid');
+                }
+            }],
         ]);
 
         if ($validator->failed()) {
