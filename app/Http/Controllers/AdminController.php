@@ -171,4 +171,16 @@ class AdminController extends Controller
             return $this->failure(['failed to update privilege']);
         }
     }
+
+    public function statistics()
+    {
+        $tasks = Task::select('task_status', DB::raw('count(*) as total'))->groupBy('task_status')->get();
+        $users = Profile::select('identity_status', DB::raw('count(*) as total'))->groupBy('identity_status')->get();
+        $transactions = Transaction::sum('trans_amount');
+        return $this->success('get statistics data successfully', [
+            "tasks" => $tasks,
+            "users" => $users,
+            "transactions" => $transactions,
+        ]);
+    }
 }

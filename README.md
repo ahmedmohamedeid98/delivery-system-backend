@@ -42,6 +42,7 @@ The REST API to the eDelivery system is described below.
 * [admin: get task list](#admin-get-task-list)
 * [admin: assign privilege](#admin-assign-privilege)
 * [admin: verify identity](#admin-verify-identity)
+* [admin: get statistics data](#admin-get-statistics-data)
 
 ## Get User Address
 `GET`
@@ -1004,3 +1005,59 @@ The REST API to the eDelivery system is described below.
         "success": true,
         "message": "verify identity successfully!"
     }
+
+
+[Back to endpoints list.](#endpoints)
+
+---
+
+
+## Admin Get Statistics Data
+`GET`
+    
+    .../api/admin/statistics
+
+### Header
+
+    {
+        "Authentication" : "token"
+    }
+
+### Response
+
+    {
+        "success": true,
+        "message": "get statistics data successfully",
+        "data": {
+            "tasks": [
+                {
+                    "task_status": 0,
+                    "total": 3
+                },
+                {
+                    "task_status": 1,
+                    "total": 1
+                },
+                {
+                    "task_status": 2,
+                    "total": 1
+                }
+            ],
+            "users": [
+                {
+                    "identity_status": 0,
+                    "total": 3
+                },
+                {
+                    "identity_status": 1,
+                    "total": 3
+                }
+            ],
+            "transactions": 25
+        }
+    }
+
+    
+[Back to endpoints list.](#endpoints)
+
+---
