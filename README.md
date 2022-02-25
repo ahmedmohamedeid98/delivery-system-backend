@@ -1043,6 +1043,7 @@ The REST API to the eDelivery system is described below.
                     "total": 1
                 }
             ],
+            "user_count": 6,
             "users": [
                 {
                     "identity_status": 0,

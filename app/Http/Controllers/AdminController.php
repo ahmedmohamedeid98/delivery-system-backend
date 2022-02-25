@@ -175,10 +175,12 @@ class AdminController extends Controller
     public function statistics()
     {
         $tasks = Task::select('task_status', DB::raw('count(*) as total'))->groupBy('task_status')->get();
+        $user_count = User::count();
         $users = Profile::select('identity_status', DB::raw('count(*) as total'))->groupBy('identity_status')->get();
         $transactions = Transaction::sum('trans_amount');
         return $this->success('get statistics data successfully', [
             "tasks" => $tasks,
+            "user_count" => $user_count,
             "users" => $users,
             "transactions" => $transactions,
         ]);
