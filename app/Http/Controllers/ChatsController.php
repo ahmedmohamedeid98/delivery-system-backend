@@ -108,7 +108,6 @@ class ChatsController extends Controller
                 array_push($details, ['chat_with' => new UserResource($chat_with), 'on_channel_id' => $channel->id]);
             }
         }
-        NotificationController::storeAndPublish('test notification', $user->id);
         return $this->success('success', ['me' => new UserResource($user), "channels" => $details]);
     }
 }
