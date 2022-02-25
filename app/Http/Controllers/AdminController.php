@@ -117,12 +117,12 @@ class AdminController extends Controller
             NotificationController::storeAndPublish('Congratulations, your identities verified successfully', $data['user_id']);
             return $this->success('verify identity successfully!');
         } else {
-            return ['ht' => true];
             $deleted = Identity::where('id', $data['identity_id'])->delete();
             if ($deleted) {
                 NotificationController::storeAndPublish('Your identity was rejected, please provide valid identity and try again.', $data['user_id']);
                 return $this->failure(['failed to verify identity']);
             }
+            return $this->success('rejected identity successfully!', ['rejected' => $deleted]);
         }
     }
 
