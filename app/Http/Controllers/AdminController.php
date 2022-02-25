@@ -102,27 +102,42 @@ class AdminController extends Controller
     {
         $data = $request->all();
         $validator = Validator::make($data, [
-            "user_id" => ['required', 'integer', 'exists:users'],
-            "identity_id" => ['required', 'integer', 'exists:identities'],
+            "user_id" => ['required', 'integer', function ($attr, $val, $fail) {
+                if (count(User::where('id', $val)->get()) == 0) {
+                    $fail('The ' . $attr . ' is invalid');
+                }
+            }],
+            "identity_id" => ['required', 'integer', function ($attr, $val, $fail) {
+                if (count(Identity::where('id', $val)->get()) == 0) {
+                    $fail('The ' . $attr . ' is invalid');
+                }
+            }],
             "verify" => ['required', 'boolean']
         ]);
 
-        if ($validator->failed()) {
+        if ($validator->fails()) {
             return $this->failure([$validator->errors()->all()]);
         }
 
-        if ($data['verify'] == true) {
-            Profile::where('user_id', $data['user_id'])->update(['identity_status' => true]);
-            Identity::where('id', $data['identity_id'])->update(['verified' => true]);
-            NotificationController::storeAndPublish('Congratulations, your identities verified successfully', $data['user_id']);
-            return $this->success('verify identity successfully!');
-        } else {
-            $deleted = Identity::where('id', $data['identity_id'])->delete();
-            if ($deleted) {
-                NotificationController::storeAndPublish('Your identity was rejected, please provide valid identity and try again.', $data['user_id']);
-                return $this->failure(['failed to verify identity']);
+        if ($data['verify'] === true) {
+            DB::beginTransaction();
+            $updateProfile = Profile::where('user_id', $data['user_id'])->update(['identity_status' => true]);
+            $updateIdentity = Identity::where('id', $data['identity_id'])->update(['verified' => true]);
+            if ($updateProfile && $updateIdentity) {
+                DB::commit();
+                NotificationController::storeAndPublish('Congratulations, your identities verified successfully', $data['user_id']);
+                return $this->success('verify identity successfully!');
             }
-            return $this->success('rejected identity successfully!', ['rejected' => $deleted]);
+        } else {
+            DB::beginTransaction();
+            $updated = User::where('id', $data['user_id'])->update(['identity_id' => null]);
+            $deleted = Identity::where('id', $data['identity_id'])->delete();
+            if ($deleted && $updated) {
+                DB::commit();
+                NotificationController::storeAndPublish('Your identity was rejected, please provide valid identity and try again.', $data['user_id']);
+                return $this->success('rejected identity successfully!', ['rejected' => $deleted]);
+            }
+            return $this->failure(['failed to verify identity']);
         }
     }
 
