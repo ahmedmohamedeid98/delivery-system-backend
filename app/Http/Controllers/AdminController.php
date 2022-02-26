@@ -28,7 +28,7 @@ class AdminController extends Controller
 {
     public function isAdmin()
     {
-        if (Auth::user()->is_admin == true) {
+        if (Auth::user()->is_admin == 1) {
             return $this->success("user is admin", ["is_admin" => true]);
         } else {
             return $this->success("user is not admin", ["is_admin" => false]);
