@@ -61,22 +61,51 @@ class DashboardController extends Controller
         $sender_id = Auth::user()->id;
         $data = $request->all();
 
+
         $alreadyAddedFeedback = Feedback::find(['sender_id' => $sender_id, 'reciver_id' => $data['reciver_id'], 'task_id' => $data['task_id']]);
         if ($alreadyAddedFeedback) {
             return $this->failure(['you already add feedback for client who complete this task']);
         }
 
         try {
+            DB::beginTransaction();
             $feedback = Feedback::create(
                 [
                     'sender_id' => $sender_id,
                     'reciver_id' => +$data['reciver_id'],
                     'task_id' => +$data['task_id'],
-                    'rate' => $data['rate'],
                     'content' => $data['content'],
+                    'rate' => $data['rate'],
                 ]
             );
-            return $this->success('feedback added successfully!', $feedback);
+            $allFeedbacks =  Feedback::where('reciver_id', $data['reciver_id'])->get();
+            $feedback_count = count($allFeedbacks);
+            $rateSum = 0.0;
+            $successCount = 0;
+            for ($i = 0; $i < $feedback_count; $i++) {
+                $rate = $allFeedbacks[$i]->rate;
+                $rateSum += $rate;
+                if ($rate >= 2.5) {
+                    $successCount++;
+                }
+            }
+
+            $totalRate = $rateSum / $feedback_count;
+            $successRate = $successCount / $feedback_count * 100;
+
+            $updateProfile = Profile::where('user_id', $data['reciver_id'])->update(
+                [
+                    'total_rate' => $totalRate,
+                    'success_rate' => $successRate,
+                ]
+            );
+
+            if ($updateProfile) {
+                DB::commit();
+                return $this->success('feedback added successfully!', $feedback);
+            } else {
+                return $this->failure(['faild to add feedback please try again!']);
+            }
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
