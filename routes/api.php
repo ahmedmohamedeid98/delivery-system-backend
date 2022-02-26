@@ -17,11 +17,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PublichActionController;
 use App\Http\Controllers\StaticDataController;
 use App\Http\Controllers\TaskController;
-use App\Http\Middleware\admin;
-use App\Models\ChatChannel;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 /*
 |--------------------------------------------------------------------------
@@ -46,7 +42,7 @@ Route::middleware('json.response', 'throttle:60,1')->group(function () {
     Route::post('password/forget', [ForgetPasswordController::class, 'forget']);
     Route::post('password/reset', [ForgetPasswordController::class, 'reset']);
 });
-Route::post('logout', [ApiAuthController::class, 'logout'])->middleware(['auth:api', 'json.response']);
+Route::post('logout', [ApiAuthController::class, 'logout'])->middleware(['auth:api', 'json.response', 'throttle:60,1']);
 
 /**
  * Profile
@@ -60,8 +56,8 @@ Route::middleware('auth:api', 'throttle:60,1')->group(function () {
     Route::post('user/edit-profile', [ProfileController::class, 'edit']);
     Route::get('user/address', [ProfileController::class, 'getAddress']);
     Route::post('user/address', [ProfileController::class, 'updateAddress']);
-    Route::post('identity/images', [IdentityController::class, 'create'])->middleware('auth:api');
-    Route::get('identity/can-upload', [IdentityController::class, 'canUpload'])->middleware('auth:api');
+    Route::post('identity/images', [IdentityController::class, 'create']);
+    Route::get('identity/can-upload', [IdentityController::class, 'canUpload']);
 });
 
 
