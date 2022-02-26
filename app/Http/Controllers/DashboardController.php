@@ -156,10 +156,10 @@ class DashboardController extends Controller
             DB::beginTransaction();
             $updateTask = Task::where('id', $task_id)->update(['task_status' => 2]);
             $user_id = Auth::user()->id;
-            $profile = Profile::where('user_id', $user_id)->first();
-            $newEarningAmount = $profile->earning_amount + $total - ($total * 0.1);
-            $updateProfile = Profile::where('user_id', $user_id)->update(['earning_amount' => $newEarningAmount]);
-            if ($updateTask && $updateProfile) {
+            $profile = Profile::find($user_id);
+            $profile->earning_amount += $total - ($total * 0.1);
+            $profile->save();
+            if ($updateTask) {
                 DB::commit();
                 return $this->success('Task completed successfully!');
             } else {
