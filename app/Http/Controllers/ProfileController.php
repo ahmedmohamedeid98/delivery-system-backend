@@ -14,6 +14,7 @@ use App\Models\City;
 use App\Models\Governorate;
 use Exception;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -51,8 +52,11 @@ class ProfileController extends Controller
         }
 
         if ($picture) {
-            $user_id = Auth::user()->id;
-            User::find($user_id)->update(['photo_url' => $picture]);
+            $user = Auth::user();
+            if ($user->photo_url != 'default-profile-image-2122202.png') {
+                File::delete(public_path() . '/img/' . $user->photo_url);
+            }
+            User::find($user->id)->update(['photo_url' => $picture]);
             return $this->success('update photo successfully', ['photo_url' => $picture]);
         } else {
             return $this->failure(['something want wrong']);
