@@ -11,6 +11,7 @@ use App\Models\UserRequestTask;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -91,31 +92,50 @@ class DashboardController extends Controller
     }
 
 
-    public function getTask(Request $request){
+    public function getTask(Request $request)
+    {
         $task_id = $request->query('id');
 
         if (!$task_id || !Task::find($task_id)) {
             return $this->failure(['invalid task id']);
         }
         try {
-            $task = Task::with('deliveryLocation','targetLocation')->where('id', $task_id)->get();
+            $task = Task::with('deliveryLocation', 'targetLocation')->where('id', $task_id)->get();
             return $this->success('get Task successfully', $task);
         } catch (Exception $ex) {
             return $this->failure([$ex->getMessage()]);
         }
     }
 
-    public function completeTask(Request $request){
+    public function completeTask(Request $request)
+    {
         $task_id = $request->query('id');
         if (!$task_id || !Task::find($task_id)) {
             return $this->failure(['invalid task id']);
         }
         try {
-            Task::where('id', $task_id)->update(['task_status' => 2]);
-            return $this->success('Task completed successfully!');
+            $task = Task::where('id', $task_id)->first();
+            $total = 0;
+            $amounts = [$task->paid_service, $task->paid_order, $task->paid_both];
+            foreach ($amounts as $amount) {
+                if ($amount != null) {
+                    $total += $amount;
+                }
+            }
+
+            DB::beginTransaction();
+            $updateTask = Task::where('id', $task_id)->update(['task_status' => 2]);
+            $user = Auth::user();
+            $newEarningAmount = $user->earning_amount += $total - ($total * 0.1);
+            $updateUser = User::where('id', $user->id)->update(['earning_amount' => $newEarningAmount]);
+            if ($updateTask && $updateUser) {
+                DB::commit();
+                return $this->success('Task completed successfully!');
+            } else {
+                return $this->failure(['failed to complete task please try again!']);
+            }
         } catch (Exception $ex) {
             return $this->failure([$ex->getMessage()]);
         }
     }
-
 }
