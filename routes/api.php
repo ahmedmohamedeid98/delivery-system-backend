@@ -34,106 +34,117 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 |
 */
 
-Route::get('task/list', [TaskController::class, 'index'])->middleware('auth:api');
-Route::post('task', [TaskController::class, 'create'])->middleware('auth:api');
 
-// Payment Gateway
-Route::post('pay', [PayTabsGatewayController::class, 'index'])->middleware('auth:api');
+/**
+ * Auth
+ */
+Route::middleware('json.response', 'throttle:60,1')->group(function () {
+    Route::post('login', [ApiAuthController::class, 'login']);
+    Route::post('register', [ApiAuthController::class, 'register']);
+    Route::post('login/google', [ApiSocialAuthController::class, 'googleLogin']);
+    Route::post('login/facebook', [ApiSocialAuthController::class, 'facebookLogin']);
+    Route::post('password/forget', [ForgetPasswordController::class, 'forget']);
+    Route::post('password/reset', [ForgetPasswordController::class, 'reset']);
+});
+Route::post('logout', [ApiAuthController::class, 'logout'])->middleware(['auth:api', 'json.response']);
+
+/**
+ * Profile
+ */
+Route::middleware('auth:api', 'throttle:60,1')->group(function () {
+    Route::get('user', [ApiUserController::class, 'index']);
+    Route::get('user/about{id?}', [ApiUserController::class, 'about']);
+    Route::get('user/showProfile{id?}', [ProfileController::class, 'showAnotherUser']);
+    Route::get('user/profile', [ProfileController::class, 'show']);
+    Route::post('user/profile-photo', [ProfileController::class, 'changePhoto']);
+    Route::post('user/edit-profile', [ProfileController::class, 'edit']);
+    Route::get('user/address', [ProfileController::class, 'getAddress']);
+    Route::post('user/address', [ProfileController::class, 'updateAddress']);
+    Route::post('identity/images', [IdentityController::class, 'create'])->middleware('auth:api');
+    Route::get('identity/can-upload', [IdentityController::class, 'canUpload'])->middleware('auth:api');
+});
+
+
+/**
+ * Task
+ */
+Route::middleware('auth:api', 'throttle:60,1')->group(function () {
+    Route::get('task/list', [TaskController::class, 'index']);
+    Route::post('task', [TaskController::class, 'create']);
+    Route::get('task/can-apply{task_id?}', [ApplyOnTaskController::class, 'canApply']);
+    Route::post('task/apply', [ApplyOnTaskController::class, 'apply']);
+    Route::post('task/offers{task_id?}', [ApplyOnTaskController::class, 'offersOnTask']);
+    Route::get('task/details{id?}', [TaskController::class, 'getTaskDetails']);
+    Route::delete('myTask{id?}', [DashboardController::class, 'deleteTask']);
+    Route::get('location/data', [StaticDataController::class, 'getGovernorate']);
+    Route::get('location/target', [LocationController::class, 'getTargetLocations']);
+    Route::get('location/delivery', [LocationController::class, 'getDeliveryLocations']);
+    Route::post('location/target', [LocationController::class, 'createTargetLocation']);
+    Route::post('location/delivery', [LocationController::class, 'createDeliveryLocation']);
+    Route::get('viewTask{id?}', [DashboardController::class, 'getTask']);
+    Route::post('completeTask{id?}', [DashboardController::class, 'completeTask']);
+});
+
+/**
+ * Dashboard
+ */
+Route::middleware('auth:api', 'throttle:60,1')->group(function () {
+    Route::post('interview/select', [InterviewController::class, 'select']);
+    Route::get('interview/candidates{task_id?}', [InterviewController::class, 'candidates']);
+    Route::post('interview/approve', [InterviewController::class, 'approve']);
+    Route::get('task/me', [DashboardController::class, 'getMyTasks']);
+    Route::get('task/applied', [DashboardController::class, 'getAppliedTasks']);
+    Route::get('user/connects', [ApiUserController::class, 'getConnects']);
+    Route::get('feedback/me', [DashboardController::class, 'getMyFeedback']);
+    Route::get('feedback{user_id?}', [DashboardController::class, 'getFeedback']);
+    Route::post('feedback', [DashboardController::class, 'addFeedback']);
+});
+
+
+/**
+ * Chat & Notification
+ */
+Route::middleware('auth:api', 'throttle:60,1')->group(function () {
+    Route::get('messages', [ChatsController::class, 'fetchMessages']);
+    Route::post('messages', [ChatsController::class, 'sendMessage']);
+    Route::post('pusher/auth', [ChatsController::class, 'authPusher']);
+    Route::get('channel{id?}', [ChatsController::class, 'getChannelDetails']);
+    Route::get('chat/me/channels', [ChatsController::class, 'getAllMyChatChannels']);
+    Route::get('notifications', [NotificationController::class, 'getNotifications']);
+    Route::get('notifications/seen', [NotificationController::class, 'markNotificationAsSeen']);
+});
+
+/**
+ * Payment
+ */
+Route::post('pay', [PayTabsGatewayController::class, 'index'])->middleware(['auth:api', 'throttle:60,1']);
 Route::post('payment/callback', [PayTabsGatewayController::class, 'callback']);
 
-// user
-Route::get('user', [ApiUserController::class, 'index'])->middleware(['auth:api', 'json.response']);
-Route::get('user/about{id?}', [ApiUserController::class, 'about'])->middleware(['auth:api', 'json.response']);
 
-// normal auth
-Route::post('login', [ApiAuthController::class, 'login'])->middleware(['json.response']);
-Route::post('register', [ApiAuthController::class, 'register'])->middleware(['json.response']);
-// social auth
-Route::post('login/google', [ApiSocialAuthController::class, 'googleLogin'])->middleware(['json.response']);
-Route::post('login/facebook', [ApiSocialAuthController::class, 'facebookLogin'])->middleware('json.response');
-
-// logout
-Route::post('logout', [ApiAuthController::class, 'logout'])->middleware(['auth:api', 'json.response']);
-// reset
-Route::post('password/forget', [ForgetPasswordController::class, 'forget']);
-Route::post('password/reset', [ForgetPasswordController::class, 'reset']);
-
-Route::post('identity/images', [IdentityController::class, 'create'])->middleware('auth:api');
-Route::get('identity/can-upload', [IdentityController::class, 'canUpload'])->middleware('auth:api');
-// profile
-Route::get('user/showProfile{id?}', [ProfileController::class, 'showAnotherUser'])->middleware('auth:api');
-Route::get('user/profile', [ProfileController::class, 'show'])->middleware('auth:api');
-Route::post('user/profile-photo', [ProfileController::class, 'changePhoto'])->middleware('auth:api');
-Route::post('user/edit-profile', [ProfileController::class, 'edit'])->middleware('auth:api');
-Route::get('user/address', [ProfileController::class, 'getAddress'])->middleware("auth:api");
-Route::post('user/address', [ProfileController::class, 'updateAddress'])->middleware("auth:api");
-Route::get('location/data', [StaticDataController::class, 'getGovernorate'])->middleware('auth:api');
-
-Route::delete('myTask{id?}', [DashboardController::class, 'deleteTask'])->middleware('auth:api');
-
-Route::get('viewTask{id?}', [DashboardController::class, 'getTask'])->middleware('auth:api');
-
-Route::post('completeTask{id?}', [DashboardController::class, 'completeTask'])->middleware('auth:api');
-
-
-
-
-
-
-
-
-
-
-Route::get('location/target', [LocationController::class, 'getTargetLocations'])->middleware('auth:api');
-Route::get('location/delivery', [LocationController::class, 'getDeliveryLocations'])->middleware('auth:api');
-Route::post('location/target', [LocationController::class, 'createTargetLocation'])->middleware('auth:api');
-Route::post('location/delivery', [LocationController::class, 'createDeliveryLocation'])->middleware('auth:api');
-Route::get('task/can-apply{task_id?}', [ApplyOnTaskController::class, 'canApply'])->middleware('auth:api');
-Route::post('task/apply', [ApplyOnTaskController::class, 'apply'])->middleware('auth:api');
-Route::post('task/offers{task_id?}', [ApplyOnTaskController::class, 'offersOnTask'])->middleware('auth:api');
-Route::post('interview/select', [InterviewController::class, 'select'])->middleware('auth:api');
-Route::get('interview/candidates{task_id?}', [InterviewController::class, 'candidates'])->middleware('auth:api');
-Route::post('interview/approve', [InterviewController::class, 'approve'])->middleware('auth:api');
-Route::get('task/details{id?}', [TaskController::class, 'getTaskDetails'])->middleware('auth:api');
-Route::get('task/me', [DashboardController::class, 'getMyTasks'])->middleware('auth:api');
-Route::get('task/applied', [DashboardController::class, 'getAppliedTasks'])->middleware('auth:api');
-Route::get('user/connects', [ApiUserController::class, 'getConnects'])->middleware("auth:api");
-Route::get('feedback/me', [DashboardController::class, 'getMyFeedback'])->middleware('auth:api');
-Route::get('feedback{user_id?}', [DashboardController::class, 'getFeedback'])->middleware('auth:api');
-Route::post('feedback', [DashboardController::class, 'addFeedback'])->middleware('auth:api');
-
-
-Route::get('messages', [ChatsController::class, 'fetchMessages'])->middleware('auth:api');
-Route::post('messages', [ChatsController::class, 'sendMessage'])->middleware('auth:api');
-
-Route::post('contact-us', [PublichActionController::class, 'sendContactForm']);
-Route::get('is-admin', [AdminController::class, 'isAdmin'])->middleware('auth:api');
-Route::delete('task{id?}', [AdminController::class, 'deleteTask'])->middleware('auth:api');
-
-
-Route::post('pusher/auth', [ChatsController::class, 'authPusher'])->middleware('auth:api');
-
-
-Route::get('channel{id?}', [ChatsController::class, 'getChannelDetails'])->middleware('auth:api');
-Route::get('chat/me/channels', [ChatsController::class, 'getAllMyChatChannels'])->middleware('auth:api');
-Route::get('notifications', [NotificationController::class, 'getNotifications'])->middleware('auth:api');
-Route::get('notifications/seen', [NotificationController::class, 'markNotificationAsSeen'])->middleware('auth:api');
-Route::get('admin/contact-us', [AdminController::class, 'getContactUs'])->middleware(['auth:api', 'admin']);
-Route::get('admin/users', [AdminController::class, 'getUsers'])->middleware(['auth:api', 'admin']);
-Route::get('admin/transactions', [AdminController::class, 'getTransactions'])->middleware(['auth:api', 'admin']);
-Route::get('admin/identities', [AdminController::class, 'getIdentities'])->middleware(['auth:api', 'admin']);
-Route::delete('admin/user{id?}', [AdminController::class, 'deleteUser'])->middleware(['auth:api', 'admin']);
+/**
+ * Admin
+ */
+Route::middleware('auth:api', 'admin', 'throttle:60,1')->group(function () {
+    Route::get('admin/contact-us', [AdminController::class, 'getContactUs']);
+    Route::get('admin/users', [AdminController::class, 'getUsers']);
+    Route::get('admin/transactions', [AdminController::class, 'getTransactions']);
+    Route::get('admin/identities', [AdminController::class, 'getIdentities']);
+    Route::delete('admin/user{id?}', [AdminController::class, 'deleteUser']);
+    Route::get('admin/tasks', [AdminController::class, 'getTasks']);
+    Route::post('admin/assign-privilege', [AdminController::class, 'assignPrivilege']);
+    Route::post('admin/identity', [AdminController::class, 'verifyIdentity']);
+    Route::get('admin/statistics', [AdminController::class, 'statistics']);
+    Route::get('is-admin', [AdminController::class, 'isAdmin']);
+    Route::delete('task{id?}', [AdminController::class, 'deleteTask']);
+});
 Route::post('admin/login', [AdminController::class, 'login']);
-Route::get('admin/tasks', [AdminController::class, 'getTasks'])->middleware(['auth:api', 'admin']);
-Route::post('admin/assign-privilege', [AdminController::class, 'assignPrivilege'])->middleware(['auth:api', 'admin']);
-Route::post('admin/identity', [AdminController::class, 'verifyIdentity'])->middleware(['auth:api', 'admin']);
-Route::get('admin/statistics', [AdminController::class, 'statistics'])->middleware(['auth:api', 'admin']);
 Route::post('admin/signup', [AdminController::class, 'signUp']);
 
 
-
-
-
+/**
+ * Public
+ */
+Route::post('contact-us', [PublichActionController::class, 'sendContactForm']);
 
 
 
