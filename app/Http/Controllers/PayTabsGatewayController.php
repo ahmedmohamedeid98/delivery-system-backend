@@ -135,6 +135,10 @@ class PayTabsGatewayController extends Controller
         } else if ($trans_type == "both") {
           $task->paid_both = $trans_amount;
         }
+        $profile = Profile::where('user_id', $user_id);
+        $spent_amount = $profile->spent_amount;
+        $profile->spent_amount = $spent_amount + $trans_amount;
+        $profile->save();
         $task->save();
       }
     } catch (Exception $e) {
