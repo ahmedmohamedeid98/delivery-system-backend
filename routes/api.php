@@ -120,19 +120,23 @@ Route::post('payment/callback', [PayTabsGatewayController::class, 'callback']);
 /**
  * Admin
  */
-Route::middleware('auth:api', 'admin', 'throttle:60,1')->group(function () {
-    Route::get('admin/contact-us', [AdminController::class, 'getContactUs']);
-    Route::get('admin/users', [AdminController::class, 'getUsers']);
-    Route::get('admin/transactions', [AdminController::class, 'getTransactions']);
-    Route::get('admin/identities', [AdminController::class, 'getIdentities']);
-    Route::delete('admin/user{id?}', [AdminController::class, 'deleteUser']);
-    Route::get('admin/tasks', [AdminController::class, 'getTasks']);
-    Route::post('admin/assign-privilege', [AdminController::class, 'assignPrivilege']);
-    Route::post('admin/identity', [AdminController::class, 'verifyIdentity']);
-    Route::get('admin/statistics', [AdminController::class, 'statistics']);
+Route::middleware('auth:api', 'admin', 'throttle:60,1')->prefix('admin')->group(function () {
+    Route::get('contact-us', [AdminController::class, 'getContactUs']);
+    Route::get('users', [AdminController::class, 'getUsers']);
+    Route::get('transactions', [AdminController::class, 'getTransactions']);
+    Route::get('identities', [AdminController::class, 'getIdentities']);
+    Route::delete('user{id?}', [AdminController::class, 'deleteUser']);
+    Route::get('tasks', [AdminController::class, 'getTasks']);
+    Route::post('assign-privilege', [AdminController::class, 'assignPrivilege']);
+    Route::post('identity', [AdminController::class, 'verifyIdentity']);
+    Route::get('statistics', [AdminController::class, 'statistics']);
+});
+
+Route::middleware('auth:api')->group(function () {
     Route::get('is-admin', [AdminController::class, 'isAdmin']);
     Route::delete('task{id?}', [AdminController::class, 'deleteTask']);
 });
+
 Route::post('admin/login', [AdminController::class, 'login']);
 Route::post('admin/signup', [AdminController::class, 'signUp']);
 
