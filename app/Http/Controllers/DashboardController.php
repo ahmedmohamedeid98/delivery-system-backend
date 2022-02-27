@@ -169,4 +169,29 @@ class DashboardController extends Controller
             return $this->failure([$ex->getMessage()]);
         }
     }
+
+    public function invoice(Request $request)
+    {
+        $task_id = $request->query('task_id');
+        $task = Task::find($task_id);
+        if (!$task) {
+            return $this->failure(['invalid task id']);
+        }
+        $user = Auth::user();
+        $data = UserRequestTask::where('task_id', $task_id)->where('approve_status', 2)->get('user_id')->first();
+        $client = null;
+
+        if ($data) {
+            $client = User::find($data->user_id);
+        }
+        return $this->success('success', [
+            'id' => $task->id,
+            'from' => $user->name,
+            'title' => $task->title,
+            'budget' => $task->budget,
+            'status' => $task->task_status,
+            'to' => isset($client) ? $client->name : '',
+            'to_email' => isset($client) ? $client->email : '',
+        ]);
+    }
 }

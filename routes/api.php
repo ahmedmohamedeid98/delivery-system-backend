@@ -94,6 +94,7 @@ Route::middleware('auth:api', 'throttle:60,1')->group(function () {
     Route::get('feedback/me', [DashboardController::class, 'getMyFeedback']);
     Route::get('feedback{user_id?}', [DashboardController::class, 'getFeedback']);
     Route::post('feedback', [DashboardController::class, 'addFeedback']);
+    Route::get('pay/invoice{task_id?}', [DashboardController::class, 'invoice']);
 });
 
 
