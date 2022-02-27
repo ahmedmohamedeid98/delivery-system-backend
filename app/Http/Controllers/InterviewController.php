@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TaskUserIdsRequest;
 use App\Http\Resources\UserResource;
+use App\Jobs\SendNotificationToUnapprovedOffers;
 use App\Models\Task;
 use App\Models\User;
 use App\Models\UserRequestTask;
@@ -70,12 +71,15 @@ class InterviewController extends Controller
                     // 1. choose one to do the task
                     $offer->approve_status = 2;
                     $offer->save();
-                    // 2. delete others
-                    UserRequestTask::where('task_id', $data['task_id'])->where('approve_status', '!=', 2)->delete();
+                    // 2. delete and send notification
+                    $job = new SendNotificationToUnapprovedOffers($data['task_id']);
+                    $this->dispatch($job);
                     // 3. move task from open to inprogress
                     $task = Task::find($data['task_id']);
                     $task->task_status = 1;
                     $task->save();
+                    $msg = "Congrats, you are approved to do the task with title \'" . $task->title . "\' you can chat with owner anytime!";
+                    NotificationController::storeAndPublish($msg, $offer->user_id);
                 } else {
                     return $this->failure(["Failure, this user is not from candidates!"]);
                 }
@@ -84,5 +88,22 @@ class InterviewController extends Controller
             return $this->failure([$e->getMessage()]);
         }
         return $this->success('finally, specify successfully one user from candidates for doing this task');
+        $this->sendNotificationsToNotApprovedClients($data['task_id']);
+    }
+
+
+    private function sendNotificationsToNotApprovedClients($task_id)
+    {
+        // 2. delete others
+        $offers = UserRequestTask::where('task_id', $task_id)->where('approve_status', '!=', 2)->get();
+        foreach ($offers as $offer) {
+            // create notification message
+            $task = Task::find($task_id);
+            $notApproveMsg = "A task that you send offer for, " . $task->title . " has been closed or has expired. your offer has been archived!.";
+            // trigger notification 
+            NotificationController::storeAndPublish($notApproveMsg, $offer->user_id);
+            // remove not approved offer
+            UserRequestTask::where('user_id', $offer->user_id)->where('task_id', $offer->task_id)->delete();
+        }
     }
 }

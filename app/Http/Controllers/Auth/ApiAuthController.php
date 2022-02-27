@@ -4,9 +4,12 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\NotificationController;
+use App\Jobs\TriggerNotification;
+use App\Models\OauthAccessToken;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Exception;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
@@ -31,7 +34,9 @@ class ApiAuthController extends Controller
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
-        NotificationController::storeAndPublish('Congratulations ' . $user->name . ', creating account successfully', $user->id);
+        $msg = 'Wellcome ' . $user->name . ', creating account successfully';
+        // Trigger Notification Async.
+        $this->dispatch(new TriggerNotification($msg, $user->id));
         return $this->successWithToken($user);
     }
 
@@ -58,22 +63,23 @@ class ApiAuthController extends Controller
 
     public function logout(Request $request)
     {
-        $allDevices = $request->only('all_devices');
-        $validator = Validator::make($allDevices, [
+        $data = $request->all();
+        $validator = Validator::make($data, [
             'all_devices' => ['required', 'boolean']
         ]);
 
         if ($validator->fails()) {
             return $this->failure($validator->errors()->all());
         }
-        if ($allDevices == true) {
-            $tokens = $request->user()->tokens();
-            foreach ($tokens as $token) {
-                $token->delete();
+        if ($data['all_devices'] == true && Auth::check()) {
+            OauthAccessToken::where('user_id', Auth::user()->id)->delete();
+        } else if (Auth::check()) {
+            if ($request->user()->token()) {
+                $request->user()->token()->revoke();
             }
-            return $this->success('You have been successfully logged out from all devices!');
+        } else {
+            return $this->unauthorizedFailure();
         }
-        $request->user()->token()->delete();
         return $this->success('You have been successfully logged out!');
     }
 }
