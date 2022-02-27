@@ -156,7 +156,7 @@ class PayTabsGatewayController extends Controller
             $this->dispatch(new TriggerNotification($notifyOwnerMsg, $user_id));
 
             $notifyClientMsg = "Task owner was reserved (" . $trans_amount . " EGB) for task, " . $task->title . "  you are approved in it. we will transfer this amount for your account when completes the task successfully!";
-            $this->dispatch(new TriggerNotification($notifyClientMsg, $client->id));
+            $this->dispatch(new TriggerNotification($notifyClientMsg, $client->user_id));
           }
         }
       }
