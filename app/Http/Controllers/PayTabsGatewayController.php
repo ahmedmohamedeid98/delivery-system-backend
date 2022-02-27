@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\TriggerNotification;
 use App\Models\Profile;
 use App\Models\Task;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Models\UserRequestTask;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -124,8 +126,13 @@ class PayTabsGatewayController extends Controller
       ]);
       if ($trans_type == "connects") {
         $userProfile = Profile::find($user_id);
-        $userProfile->connects = $userProfile->connects + $this->getConnects(+$trans_amount);
+        $newConnects = $this->getConnects(+$trans_amount);
+        $userProfile->connects = $userProfile->connects + $newConnects;
         $userProfile->save();
+
+        $notifyMsg = "Buying new connects successfully, you get new " . $newConnects . " connects.";
+        $notifyJob = new TriggerNotification($notifyMsg, $user_id);
+        $this->dispatch($notifyJob);
       } else {
         $task = Task::find($task_id);
         if ($trans_type == "order") {
@@ -140,6 +147,18 @@ class PayTabsGatewayController extends Controller
         $userProfile->spent_amount = $spent_amount + $trans_amount;
         $userProfile->save();
         $task->save();
+
+        $clientsIds = UserRequestTask::where('task_id', $task->id)->get('user_id');
+        if (count($clientsIds) > 0) {
+          $client = User::find($clientsIds[0]->user_id);
+          if ($client) {
+            $notifyOwnerMsg = "You are reserve (" . $trans_amount . " EGB) for task, " . $task->title . "  successfully. we will transfer this amount to " . $client->name . " if he/she completes the task successfully!";
+            $this->dispatch(new TriggerNotification($notifyOwnerMsg, $user_id));
+
+            $notifyClientMsg = "Task owner was reserved (" . $trans_amount . " EGB) for task, " . $task->title . "  you are approved in it. we will transfer this amount for your account when completes the task successfully!";
+            $this->dispatch(new TriggerNotification($notifyClientMsg, $client->id));
+          }
+        }
       }
     } catch (Exception $e) {
       printf($e->getMessage());

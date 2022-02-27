@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ApplyTaskRequest;
 use App\Http\Resources\TaskOfferResource;
 use App\Http\Resources\UserResource;
+use App\Jobs\TriggerNotification;
 use App\Models\Profile;
 use App\Models\Task;
 use App\Models\User;
@@ -44,7 +45,8 @@ class ApplyOnTaskController extends Controller
 
     public function apply(ApplyTaskRequest $request)
     {
-        $user_id = Auth::user()->id;
+        $user = Auth::user();
+        $user_id = $user->id;
         $data = $request->all();
         $tasks = Task::where('user_id', $user_id)->where('id', $data['task_id'])->get();
         if ($tasks && count($tasks) > 0) {
@@ -71,7 +73,10 @@ class ApplyOnTaskController extends Controller
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
-
+        $notifyMsg = "New offer on your task, " . $tasks[0]->title . " ,from " . $user->name . " checkout your task offers";
+        $sendTo = $tasks[0]->user_id;
+        $notifyJob = new TriggerNotification($notifyMsg, $sendTo);
+        $this->dispatch($notifyJob);
         return $this->success('your offer is send successfully!');
     }
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\TriggerNotification;
 use App\Models\Identity;
 use App\Models\Profile;
 use App\Models\User;
@@ -58,6 +59,8 @@ class IdentityController extends Controller
             }
             $user->identity_id = $identity->id;
             $user->save();
+            $notifyMsg = "Identity images uploaded succesfully, We will approve it soon!";
+            $this->dispatch(new TriggerNotification($notifyMsg, $user->id));
             return $this->success(
                 'Identity Images Uploaded Succesfully, We will approve it soon!',
                 ['user_id' => $user_id, 'new_identity_id' => $identity->id]

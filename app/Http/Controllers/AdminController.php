@@ -9,6 +9,7 @@ use App\Http\Resources\IdentityResource;
 use App\Http\Resources\TaskResource;
 use App\Http\Resources\TransactionResource;
 use App\Http\Resources\UserResource;
+use App\Jobs\TriggerNotification;
 use App\Models\ContactUs;
 use App\Models\Identity;
 use App\Models\Profile;
@@ -159,7 +160,8 @@ class AdminController extends Controller
             $updateIdentity = Identity::where('id', $data['identity_id'])->update(['verified' => true]);
             if ($updateProfile && $updateIdentity) {
                 DB::commit();
-                NotificationController::storeAndPublish('Congratulations, your identities verified successfully', $data['user_id']);
+                $notifyMsg = 'Congratulations, your identities verified successfully';
+                $this->dispatch(new TriggerNotification($notifyMsg, $data['user_id']));
                 return $this->success('verify identity successfully!');
             }
         } else {
@@ -168,7 +170,8 @@ class AdminController extends Controller
             $deleted = Identity::where('id', $data['identity_id'])->delete();
             if ($deleted && $updated) {
                 DB::commit();
-                NotificationController::storeAndPublish('Your identity was rejected, please provide valid identity and try again.', $data['user_id']);
+                $notifyMsg = 'Your identity was rejected, please provide valid identity and try again.';
+                $this->dispatch(new TriggerNotification($notifyMsg, $data['user_id']));
                 return $this->success('rejected identity successfully!', ['rejected' => $deleted]);
             }
             return $this->failure(['failed to verify identity']);
