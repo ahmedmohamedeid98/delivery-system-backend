@@ -13,6 +13,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class InterviewController extends Controller
 {
@@ -79,7 +80,7 @@ class InterviewController extends Controller
                     $task = Task::find($data['task_id']);
                     $task->task_status = 1;
                     $task->save();
-                    $msg = "Congrats, you are approved to do the task with title \'" . $task->title . "\' you can chat with owner anytime!";
+                    $msg = "Congrats, you are approved to do the task with title \"" . $task->title . "\" you can chat with owner anytime!";
                     $this->dispatch(new TriggerNotification($msg, $offer->user_id));
                 } else {
                     return $this->failure(["Failure, this user is not from candidates!"]);

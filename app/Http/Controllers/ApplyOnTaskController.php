@@ -73,10 +73,11 @@ class ApplyOnTaskController extends Controller
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
-        $notifyMsg = "New offer on your task, " . $tasks[0]->title . " ,from " . $user->name . " checkout your task offers";
-        $sendTo = $tasks[0]->user_id;
-        $notifyJob = new TriggerNotification($notifyMsg, $sendTo);
-        $this->dispatch($notifyJob);
+
+        $task = Task::find($data['task_id']);
+        $notifyMsg = "Get new offer on your task with title \"" . $task->title . "\" ,from \"" . $user->name . "\" checkout your task offers";
+        $sendTo = $task->user_id;
+        $this->dispatch(new TriggerNotification($notifyMsg, $sendTo));
         return $this->success('your offer is send successfully!');
     }
 

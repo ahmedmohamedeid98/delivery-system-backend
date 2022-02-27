@@ -37,7 +37,7 @@ class SendNotificationToUnapprovedOffers implements ShouldQueue
     {
         $offers = UserRequestTask::where('task_id', $this->task_id)->where('approve_status', '!=', 2)->get();
         foreach ($offers as $offer) {
-            $task = Task::find($offer->task_id)->get('title');
+            $task = Task::find($offer->task_id);
             $notApproveMsg = "A task that you send offer for, " . $task->title . " has been closed or has expired. your offer has been archived!.";
             NotificationController::storeAndPublish($notApproveMsg, $offer->user_id);
             UserRequestTask::where('user_id', $offer->user_id)->where('task_id', $offer->task_id)->delete();
