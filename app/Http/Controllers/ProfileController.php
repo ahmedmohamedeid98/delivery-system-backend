@@ -46,22 +46,34 @@ class ProfileController extends Controller
 
     public function changePhoto(Request $request)
     {
-        $picture = null;
-        if ($request->hasFile('photo')) {
-            $picture = $this->store($request->file('photo'));
-        }
-
-        if ($picture) {
-            $user = Auth::user();
-            if ($user->photo_url != 'default-profile-image-2122202.png') {
-                File::delete(public_path() . '/img/' . $user->photo_url);
-            }
-            User::find($user->id)->update(['photo_url' => $picture]);
-            return $this->success('update photo successfully', ['photo_url' => $picture]);
+        $data = $request->all();
+        if ($data['photo_url']) {
+            $user_id = Auth::user()->id;
+            User::find($user_id)->update(['photo_url' => $data['photo_url']]);
+            return $this->success('update photo successfully', ['photo_url' => $data['photo_url']]);
         } else {
-            return $this->failure(['something want wrong']);
+            return $this->failure(['something want wrong', $data['photo_url']]);
         }
     }
+
+    // public function changePhoto(Request $request)
+    // {
+    //     $picture = null;
+    //     if ($request->hasFile('photo')) {
+    //         $picture = $this->store($request->file('photo'));
+    //     }
+
+    //     if ($picture) {
+    //         $user = Auth::user();
+    //         if ($user->photo_url != 'default-profile-image-2122202.png') {
+    //             File::delete(public_path() . '/img/' . $user->photo_url);
+    //         }
+    //         User::find($user->id)->update(['photo_url' => $picture]);
+    //         return $this->success('update photo successfully', ['photo_url' => $picture]);
+    //     } else {
+    //         return $this->failure(['something want wrong']);
+    //     }
+    // }
 
     public function edit(Request $req)
     {
