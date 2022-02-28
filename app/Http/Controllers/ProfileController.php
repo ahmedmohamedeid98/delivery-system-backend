@@ -178,6 +178,7 @@ class ProfileController extends Controller
     private function store($file)
     {
         $filename  = $file->getClientOriginalName();
+
         $picture   = date('His') . '-' . $filename;
         $file->move(public_path('img'), $picture);
         return $picture;
