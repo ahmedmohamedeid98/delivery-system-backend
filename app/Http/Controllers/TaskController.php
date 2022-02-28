@@ -20,6 +20,7 @@ use Exception;
 use Facade\Ignition\QueryRecorder\Query;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 use function PHPSTORM_META\map;
@@ -103,8 +104,20 @@ class TaskController extends Controller
     {
         $task = $request->all();
         $user_id = Auth::user()->id;
+        $profile = Profile::find($user_id);
+        if (!$profile) {
+            return $this->failure(['Please complete your profile before creating post!']);
+        }
+        if ($task['payment_method'] == 0 && !$profile->connects >= 2) {
+            return $this->failure(['You have not enough connects to post this task!']);
+        }
         $complete_code = $this->generateRandomCompleteCode();
         try {
+            DB::beginTransaction();
+            if ($task['payment_method'] == 0) {
+                $profile->connects = $profile->connects - 2;
+                $profile->save();
+            }
             $task = Task::create([
                 'user_id' => $user_id,
                 'title' => $task['title'],
@@ -126,6 +139,7 @@ class TaskController extends Controller
             $targetLocation = TargetLocation::find($task->target_location_id);
             // Trigger task event.
             broadcast(new TaskEvent($task, $deliveryLocation, $targetLocation))->toOthers();
+            DB::commit();
             return $this->success('task created successfully!', new TaskResource($task));
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
