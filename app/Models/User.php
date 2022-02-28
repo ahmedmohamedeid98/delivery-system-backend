@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Mail\ResetPasswordMail;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -9,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use App\Notifications\ResetPasswordNotification;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Mail;
 
 class User extends Authenticatable
 {
@@ -50,7 +52,7 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
         $url = "http://localhost:4200/user/reset-password?token=" . $token;
-        $this->notify(new ResetPasswordNotification($url));
+        Mail::to($this->email)->send(new ResetPasswordMail(['url' => $url]));
     }
 
     public function addedTargetLocations()

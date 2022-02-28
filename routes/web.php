@@ -13,6 +13,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+
 Route::get('/', function () {
-    return view('welcome');
+    $details = [
+        'title' => 'Mail from ItSolutionStuff.com',
+        'body' => 'This is for testing email using smtp',
+        'url' => 'https://www.google.com'
+    ];
+    return view('resetPasswordEmail', ["details" => $details]);
 });

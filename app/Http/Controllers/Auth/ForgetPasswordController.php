@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\ResetPasswordMail;
 use Exception;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
@@ -19,25 +20,22 @@ class ForgetPasswordController extends Controller
     {
         $data = $request->only('email');
         $validator = Validator::make($data, [
-            'email' => ['required','email', Rule::exists('users', 'email')],
+            'email' => ['required', 'email', Rule::exists('users', 'email')],
         ]);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return $this->failure($validator->errors()->all());
         }
         try {
-            
             $response = Password::sendResetLink($request->only('email'));
-            if($response == Password::RESET_LINK_SENT) {
+            if ($response == Password::RESET_LINK_SENT) {
                 return $this->success('Check your inbox!');
             } else {
                 return $this->failure([__($response)]);
-            } 
+            }
         } catch (Exception $e) {
             return $this->failure([$e->getMessage()]);
         }
-
     }
 
 
@@ -46,15 +44,14 @@ class ForgetPasswordController extends Controller
         $validator = Validator::make($request->all(), [
             'token' => ['required'],
             'email' => ['required', 'email'],
-            'password'=> ['required', 'confirmed', 'min:8'],
+            'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
-        if ($validator->fails())
-        {
+        if ($validator->fails()) {
             return $this->failure($validator->errors()->all());
         }
 
-        $response = Password::reset($request->only('email', 'password', 'password_confirmation', 'token'), function ($user) use($request) {
+        $response = Password::reset($request->only('email', 'password', 'password_confirmation', 'token'), function ($user) use ($request) {
             $user->forcefill([
                 'password' => Hash::make($request->password),
                 'remember_token' => Str::random(60)
@@ -62,7 +59,7 @@ class ForgetPasswordController extends Controller
             event(new PasswordReset($user));
         });
 
-        if($response == Password::PASSWORD_RESET) {
+        if ($response == Password::PASSWORD_RESET) {
             return $this->success('Password reset successfully');
         } else {
             return $this->failure([__($response)]);
