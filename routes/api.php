@@ -67,6 +67,7 @@ Route::middleware('auth:api', 'throttle:60,1')->group(function () {
 Route::middleware('auth:api', 'throttle:60,1')->group(function () {
     Route::get('task/list', [TaskController::class, 'index']);
     Route::post('task', [TaskController::class, 'create']);
+    Route::put('task/edit', [TaskController::class, 'editTask']);
     Route::get('task/can-apply{task_id?}', [ApplyOnTaskController::class, 'canApply']);
     Route::post('task/apply', [ApplyOnTaskController::class, 'apply']);
     Route::post('task/offers{task_id?}', [ApplyOnTaskController::class, 'offersOnTask']);

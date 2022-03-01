@@ -22,16 +22,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
-use function PHPSTORM_META\map;
-
-enum Budget: string
-{
-    case a = 'a';
-    case b = 'b';
-    case c = 'c';
-    case d = 'd';
-}
+use Illuminate\Validation\Rule;
 
 class TaskController extends Controller
 {
@@ -164,5 +155,31 @@ class TaskController extends Controller
             return $this->failure(['this task can not receive new offers!']);
         }
         return $this->success('get task details successfully!', new TaskResource($task));
+    }
+
+    public function editTask(Request $request)
+    {
+
+        $data = $request->all();
+
+        $validator = Validator::make($data, [
+            'id' => ['required', 'integer', Rule::exists('tasks', 'id')],
+            'user_id' => ['required', 'integer', Rule::in([Auth::user()->id])]
+        ]);
+
+        if ($validator->fails()) {
+            return $this->failure([$validator->errors()->all()]);
+        }
+
+        if ($request->only('note') == null) {
+            $data['note'] =  '';
+        }
+
+        $updated = Task::where('id', $data['id'])->update($data);
+        if ($updated) {
+            return $this->success('task updated successfully!');
+        } else {
+            return $this->failure(['something want wrong']);
+        }
     }
 }

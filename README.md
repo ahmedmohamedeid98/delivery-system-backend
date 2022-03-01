@@ -30,6 +30,7 @@ The REST API to the eDelivery system is described below.
 
 ---
 * [task: create new task](#create-new-task)
+* [task: edit task](#edit-task)
 * [task: get tasks list](#fetch-task-list)
 * [task: get task details](#get-task-details)
 * [task: delete task (admin privilege)](#delete-task)
@@ -365,6 +366,38 @@ The REST API to the eDelivery system is described below.
 [Back to endpoints list.](#endpoints)
 
 ---
+
+
+## Edit Task
+`PUT`
+
+    .../api/task/edit
+
+### Header
+
+    {
+        "Authentication": "token"
+    }
+
+### Body
+
+    {
+        'id': 1, ---> required
+        'user_id': 5, ---> required
+        ...remaining data optional...
+    }
+### Response
+
+    {
+        "success": true,
+        "message": "task updated successfully!"
+    }
+
+
+[Back to endpoints list.](#endpoints)
+
+---
+
 ## Get Task List
 `GET`
 
