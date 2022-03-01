@@ -46,7 +46,7 @@ The REST API to the eDelivery system is described below.
 * [admin: get users](#admin-get-users)
 * [admin: get transactions](#admin-get-transactions)
 * [admin: get identities](#admin-get-identities)
-* [admin: delete user](#admin-delete-user)
+* [admin: close or open user account](#admin-close-or-open-user-account)
 * [admin: get task list](#admin-get-task-list)
 * [admin: assign privilege](#admin-assign-privilege)
 * [admin: verify identity](#admin-verify-identity)
@@ -956,23 +956,39 @@ The REST API to the eDelivery system is described below.
 
 ---
 
-## Admin Delete User
-`DELETE`
+## Admin Close or Open User Account
+`POST`
 
-    .../api/admin/user?id=7
+    .../api/admin/user/account
 
 ### Header
     {
         "Authentication": "token"
     }
 
+### Body
+
+    {
+	    "id": 5,
+        "status": 1 (open) OR 0 (close)
+    }
 ### Response
 
     {
         "success": true,
-        "message": "user deleted successfully",
-        "data": 1
+        "message": "user account open successfully"
     }
+    or
+    {
+        "success": true,
+        "message": "user account close successfully"
+    }
+    or (if trying to close account which is already closed and vice versa)
+    {
+        "success": true,
+        "message": "there is no action can happen!"
+    }
+
 
 ## Admin Get Task list
 `GET`

@@ -12,6 +12,7 @@ use App\Http\Resources\UserResource;
 use App\Jobs\TriggerNotification;
 use App\Models\ContactUs;
 use App\Models\Identity;
+use App\Models\OauthAccessToken;
 use App\Models\Profile;
 use App\Models\Task;
 use App\Models\Transaction;
@@ -178,15 +179,37 @@ class AdminController extends Controller
         }
     }
 
-    public function deleteUser(Request $request)
+    public function updateUserAccountStatus(Request $request)
     {
-        $user_id = $request->query('id');
-        $res = User::where('id', $user_id)->delete();
-        if (!$res) {
-            return $this->failure(['invalid user id']);
+
+        $data = $request->all();
+        $validator = Validator::make($data, [
+            "id" => ['required', 'integer', Rule::exists('users', 'id')],
+            "status" => ['required', 'integer'],
+        ]);
+        if ($validator->fails()) {
+            return $this->failure($validator->errors()->all());
         }
 
-        return $this->success('user deleted successfully', $res);
+        $status = $data['status'];
+        $user = User::find($data['id']);
+
+        if ($status == 0 && $user->account_status == 1) {
+            DB::beginTransaction();
+            $user->account_status = 0;
+            $user->save();
+            $deleted = OauthAccessToken::where('user_id', $user->id)->delete();
+            if ($deleted) {
+                DB::commit();
+                return $this->success('user account was closed successfully!');
+            }
+        }
+        if ($status == 1 && $user->account_status == 0) {
+            $user->account_status = 1;
+            $user->save();
+            return $this->success('user account open successfully');
+        }
+        return $this->success('there is no action can happen!');
     }
 
     public function getTasks(Request $request)

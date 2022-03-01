@@ -50,6 +50,12 @@ class ApiAuthController extends Controller
             return $this->failure($validator->errors()->all());
         }
         $user = User::where('email', $request->email)->first();
+
+        if (!isset($user->account_status) || $user->account_status == 0) {
+            $locked_msg = 'Your account was locked due to violations to the terms and conditions, contact us if there is a mistake';
+            return $this->failure([$locked_msg]);
+        }
+
         if ($user) {
             if (Hash::check($request->password, $user->password)) {
                 return $this->successWithToken($user);

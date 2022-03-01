@@ -18,6 +18,7 @@ class AdminUserResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'account_status' => $this->account_status,
             'photo_url' => $this->photo_url,
             'is_admin' => $this->is_admin,
             'created_at' => $this->created_at,

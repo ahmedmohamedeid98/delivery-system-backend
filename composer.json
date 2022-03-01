@@ -13,8 +13,11 @@
         "laravel/passport": "^10.3",
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
+        "mailgun/mailgun-php": "^3.5",
+        "nyholm/psr7": "^1.5",
         "paytabscom/laravel_paytabs": "dev-master",
-        "pusher/pusher-php-server": "^7.0"
+        "pusher/pusher-php-server": "^7.0",
+        "symfony/http-client": "^6.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

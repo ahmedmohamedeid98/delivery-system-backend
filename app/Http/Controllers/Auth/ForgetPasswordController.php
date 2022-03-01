@@ -31,10 +31,10 @@ class ForgetPasswordController extends Controller
             if ($response == Password::RESET_LINK_SENT) {
                 return $this->success('Check your inbox!');
             } else {
-                return $this->failure([__($response)]);
+                return $this->failure(['faild to send reset link']);
             }
         } catch (Exception $e) {
-            return $this->failure([$e->getMessage()]);
+            return $this->failure(['g', $e->getMessage()]);
         }
     }
 
@@ -62,7 +62,7 @@ class ForgetPasswordController extends Controller
         if ($response == Password::PASSWORD_RESET) {
             return $this->success('Password reset successfully');
         } else {
-            return $this->failure([__($response)]);
+            return $this->failure(['faild to send reset link']);
         }
     }
 }

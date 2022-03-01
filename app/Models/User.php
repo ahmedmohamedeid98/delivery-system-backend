@@ -11,6 +11,7 @@ use Laravel\Passport\HasApiTokens;
 use App\Notifications\ResetPasswordNotification;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use Mailgun\Mailgun;
 
 class User extends Authenticatable
 {
@@ -51,8 +52,19 @@ class User extends Authenticatable
 
     public function sendPasswordResetNotification($token)
     {
-        $url = "http://localhost:4200/user/reset-password?token=" . $token;
-        Mail::to($this->email)->send(new ResetPasswordMail(['url' => $url]));
+        // $API_KEY = 'e2e3d8ec-26bfaa0a';
+        $mgClient = Mailgun::create(env('MAILGUN_SECRET'));
+        // $mgClient = new ('181c1b3ed77dd8f7d613e72d40fd0089-e2e3d8ec-26bfaa0a');
+        // $url = "http://localhost:4200/user/reset-password?token=" . $token;
+        // Mail::to($this->email)->send(new ResetPasswordMail(['url' => $url]));
+
+        $result = $mgClient->messages()->send(env('MAILGUN_DOMAIN'), [
+            'from'    => 'ahmedmohamedeid98@gmail.com',
+            'to'      => 'alr21798@gmail.com',
+            'subject' => 'The PHP SDK is awesome!',
+            'text'    => 'sald'
+        ]);
+        // return response($result);    
     }
 
     public function addedTargetLocations()

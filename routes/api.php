@@ -126,7 +126,7 @@ Route::middleware('auth:api', 'admin', 'throttle:60,1')->prefix('admin')->group(
     Route::get('users', [AdminController::class, 'getUsers']);
     Route::get('transactions', [AdminController::class, 'getTransactions']);
     Route::get('identities', [AdminController::class, 'getIdentities']);
-    Route::delete('user{id?}', [AdminController::class, 'deleteUser']);
+    Route::post('user/account', [AdminController::class, 'updateUserAccountStatus']);
     Route::get('tasks', [AdminController::class, 'getTasks']);
     Route::post('assign-privilege', [AdminController::class, 'assignPrivilege']);
     Route::post('identity', [AdminController::class, 'verifyIdentity']);
