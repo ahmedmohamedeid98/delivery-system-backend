@@ -53,7 +53,7 @@ class User extends Authenticatable
     public function sendPasswordResetNotification($token)
     {
 
-        $url = "http://localhost:4200/user/reset-password?token=" . $token;
+        $url = "https://edelivery-marketplace.herokuapp.com/user/reset-password?token=" . $token;
         Mail::to($this->email)->send(new ResetPasswordMail(['url' => $url]));
 
         if (Mail::failures() != 0) {
