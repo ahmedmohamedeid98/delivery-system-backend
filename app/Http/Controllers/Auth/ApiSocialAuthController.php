@@ -66,7 +66,12 @@ class ApiSocialAuthController extends Controller
         if ($validator->fails()) {
             return $this->failure($validator->errors()->all());
         }
-
+        if (isset($data['email'])) {
+            $users = User::where('email', $data['email'])->get();
+            if ($users && count($users) > 0) {
+                return $this->failure(['user already exist']);
+            }
+        }
         try {
             $finduser = User::where('facebook_id', $data['id'])->first();
 
