@@ -52,19 +52,14 @@ class User extends Authenticatable
 
     public function sendPasswordResetNotification($token)
     {
-        // $API_KEY = 'e2e3d8ec-26bfaa0a';
-        $mgClient = Mailgun::create(env('MAILGUN_SECRET'));
-        // $mgClient = new ('181c1b3ed77dd8f7d613e72d40fd0089-e2e3d8ec-26bfaa0a');
-        // $url = "http://localhost:4200/user/reset-password?token=" . $token;
-        // Mail::to($this->email)->send(new ResetPasswordMail(['url' => $url]));
 
-        $result = $mgClient->messages()->send(env('MAILGUN_DOMAIN'), [
-            'from'    => 'ahmedmohamedeid98@gmail.com',
-            'to'      => 'alr21798@gmail.com',
-            'subject' => 'The PHP SDK is awesome!',
-            'text'    => 'sald'
-        ]);
-        // return response($result);    
+        $url = "http://localhost:4200/user/reset-password?token=" . $token;
+        Mail::to($this->email)->send(new ResetPasswordMail(['url' => $url]));
+
+        if (Mail::failures() != 0) {
+            return "Email has been sent successfully.";
+        }
+        return "Oops! There was some error sending the email.";
     }
 
     public function addedTargetLocations()
