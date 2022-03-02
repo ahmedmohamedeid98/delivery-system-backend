@@ -175,6 +175,15 @@ class TaskController extends Controller
             $data['note'] =  '';
         }
 
+        $task = Task::find($data['id']);
+        if ($task->payment_method == 1 && $data['payment_method'] == 0) {
+            $profile = Profile::where('user_id', $task->user_id)->first();
+            if ($profile->connects < 2) {
+                return $this->failure(['have not enough connects to make this task paymend method cash']);
+            } else {
+                $profile->connects = $profile->connects - 2;
+            }
+        }
         $updated = Task::where('id', $data['id'])->update($data);
         if ($updated) {
             return $this->success('task updated successfully!');
