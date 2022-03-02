@@ -34,7 +34,7 @@ class ForgetPasswordController extends Controller
                 return $this->failure(['faild to send reset link']);
             }
         } catch (Exception $e) {
-            return $this->failure(['g', $e->getMessage()]);
+            return $this->failure(['Mailgun.org is not allowed to send: Sandbox subdomains are for test purposes only. Please add this email to authorized recipients in Account Settings.']);
         }
     }
 
