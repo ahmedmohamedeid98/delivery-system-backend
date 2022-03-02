@@ -175,6 +175,7 @@ class TaskController extends Controller
             $data['note'] =  '';
         }
 
+        DB::beginTransaction();
         $task = Task::find($data['id']);
         if ($task->payment_method == 1 && $data['payment_method'] == 0) {
             $profile = Profile::where('user_id', $task->user_id)->first();
@@ -186,6 +187,7 @@ class TaskController extends Controller
         }
         $updated = Task::where('id', $data['id'])->update($data);
         if ($updated) {
+            DB::commit();
             return $this->success('task updated successfully!');
         } else {
             return $this->failure(['something want wrong']);
