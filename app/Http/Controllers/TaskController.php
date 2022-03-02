@@ -171,7 +171,7 @@ class TaskController extends Controller
             return $this->failure([$validator->errors()->all()]);
         }
 
-        if ($request->only('note') == null) {
+        if (!isset($data['note'])) {
             $data['note'] =  '';
         }
 
