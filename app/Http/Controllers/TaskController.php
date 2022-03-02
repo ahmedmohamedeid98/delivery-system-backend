@@ -178,11 +178,12 @@ class TaskController extends Controller
         DB::beginTransaction();
         $task = Task::find($data['id']);
         if ($task->payment_method == 1 && $data['payment_method'] == 0) {
-            $profile = Profile::where('user_id', $task->user_id)->first();
+            $profile = Profile::find($task->user_id);
             if ($profile->connects < 2) {
                 return $this->failure(['have not enough connects to make this task paymend method cash']);
             } else {
                 $profile->connects = $profile->connects - 2;
+                $profile->save();
             }
         }
         $updated = Task::where('id', $data['id'])->update($data);
