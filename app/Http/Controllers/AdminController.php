@@ -195,12 +195,12 @@ class AdminController extends Controller
         $user = User::find($data['id']);
 
         if ($status == 0 && $user->account_status == 1) {
-            DB::beginTransaction();
+            // DB::beginTransaction();
             $user->account_status = 0;
             $user->save();
             $deleted = OauthAccessToken::where('user_id', $user->id)->delete();
             if ($deleted) {
-                DB::commit();
+                // DB::commit();
                 return $this->success('user account was closed successfully!');
             }
         }
