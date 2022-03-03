@@ -4,6 +4,7 @@ namespace App\Http\Controllers\web;
 
 use App\Http\Controllers\Controller;
 use App\Jobs\TriggerNotification;
+use App\Models\EDeleiveryFailure;
 use App\Models\Profile;
 use App\Models\Task;
 use App\Models\Transaction;
@@ -52,8 +53,11 @@ class PaymentController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
-            print_r($validator->errors()->all());
-            return; // return $this->failure($validator->errors()->all());
+            $errors = $validator->errors()->all();
+            $json = json_encode($errors);
+            EDeleiveryFailure::created([
+                'failure' => $json,
+            ]);
         }
 
         if ($request['cart_id'] != $this->DEFAULT_CART_ID) {
