@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class EDeleiveryFailure extends Model
 {
     use HasFactory;
-
     public $table = "failures";
+
+    public $fillable = [
+        'failure'
+    ];
 }

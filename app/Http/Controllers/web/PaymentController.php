@@ -39,6 +39,9 @@ class PaymentController extends Controller
 
     public function callback(Request $request)
     {
+        EDeleiveryFailure::created([
+            'failure' => "start in callbacl",
+        ]);
         $rules = [
             'tran_ref' => 'bail|required',
             'payment_result' => 'bail|required',
