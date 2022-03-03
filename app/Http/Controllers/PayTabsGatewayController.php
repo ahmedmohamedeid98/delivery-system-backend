@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\PaymentEvent;
 use App\Jobs\TriggerNotification;
 use App\Models\Profile;
 use App\Models\Task;
@@ -68,22 +67,6 @@ class PayTabsGatewayController extends Controller
 
   public function callback(Request $request)
   {
-    Transaction::create([
-      'user_id' => 555,
-      'task_id' => 45,
-      'trans_ref' => "testtrans",
-      'trans_amount' => "25",
-      'trans_currency' => "EGB",
-      'trans_desc' => "desc",
-      'trans_type' => "paytab",
-      'res_status' => "A",
-      'res_msg' => "msg",
-      'trans_time' => "25",
-      'payment_method' => "Visa",
-      'payment_card' => "25452#####",
-      'ipn_trace' => "d45d4df54f5sdf",
-    ]);
-
     $rules = [
       'tran_ref' => 'bail|required',
       'payment_result' => 'bail|required',
@@ -206,11 +189,6 @@ class PayTabsGatewayController extends Controller
     # code... client ask to refund his money
     # if client B not do the job in the time client A can refund the money
     # after two days
-  }
-
-  public function return(Request $request)
-  {
-    // broadcast(new PaymentEvent())
   }
 }
 
