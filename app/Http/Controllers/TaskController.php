@@ -3,21 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Events\TaskEvent;
-use App\Http\Requests\ApplyTaskRequest;
 use App\Http\Requests\CreateTaskRequest;
-use App\Http\Resources\TaskOfferResource;
 use App\Http\Resources\TaskResource;
-use App\Http\Resources\UserResource;
-use App\Models\AddedDeliveryLocation;
-use App\Models\AddedTargetLocation;
 use App\Models\DeliveryLocation;
 use App\Models\Profile;
 use App\Models\TargetLocation;
 use App\Models\Task;
-use App\Models\User;
-use App\Models\UserRequestTask;
 use Exception;
-use Facade\Ignition\QueryRecorder\Query;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;

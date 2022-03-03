@@ -38,11 +38,11 @@ class Handler extends ExceptionHandler
      */
     public function register()
     {
-        $this->reportable(function (Throwable $e) {
-            // Ahmed Eid Added This Code -> for test -> Delete it
-           
-        });
+        // $this->reportable(function (Throwable $e) {
+        //     // Ahmed Eid Added This Code -> for test -> Delete it
 
-        
+        // });
+
+
     }
 }

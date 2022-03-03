@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\web\BuyConnectsController;
+use App\Http\Controllers\web\PayFroTaskController;
 use App\Http\Controllers\web\PaymentController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,3 +30,6 @@ Route::get('/buy-connects', [BuyConnectsController::class, 'index']);
 Route::post('buy', [BuyConnectsController::class, 'buy'])->name('connects.buy');
 Route::post('payment/callback', [PaymentController::class, 'callback']);
 Route::post('payment/return', [PaymentController::class, 'return']);
+
+Route::get('pay/task', [PayFroTaskController::class, 'index']);
+Route::post('pay/task', [PayFroTaskController::class, 'pay'])->name('pay.task');

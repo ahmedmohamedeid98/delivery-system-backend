@@ -136,12 +136,9 @@
 
             <div class="d-flex justify-content-center">
                 <div class="plan-card card best-plan" style="width: 250px; height: 350px;">
-                    <p class="ribbon">Most Popular</p>
                     <div class="card-body d-flex flex-column justify-content-center">
                         <div class="coins-container mb-2">
-                            @foreach ([1,2,3] as $post)
                             <i class="fal fa-coins me-1"></i>
-                            @endforeach
                         </div>
                         <p class="connects-count">25 Connects
                         </p>
@@ -160,15 +157,60 @@
                 </div>
             </div>
 
-            <!-- 
-            <app-plan-card [loading]="loading75" (amount)="buy($event)" coinsCount="2" connects="75" class="best-plan"
-                description="Get 70 connects and 5 as a gift" price="120">
-                <p class="ribbon">Most Popular</p>
-            </app-plan-card>
 
-            <app-plan-card [loading]="loading140" (amount)="buy($event)" coinsCount="3" connects="140"
-                description="Get 135 connects and 5 as a gift" price="200">
-            </app-plan-card> -->
+            <div class="d-flex justify-content-center">
+                <div class="plan-card card best-plan" style="width: 250px; height: 350px;">
+                    <p class="ribbon">Most Popular</p>
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <div class="coins-container mb-2">
+                            @foreach ([1,2] as $post)
+                            <i class="fal fa-coins me-1"></i>
+                            @endforeach
+                        </div>
+                        <p class="connects-count">75 Connects
+                        </p>
+                        <p class="text-center text-muted">Get 70 connects and 5 as a gift</p>
+                        <p class="price">120<i class="fal fa-pound-sign ms-1"></i></p>
+                    </div>
+                    <form method="POST" action="{{ route('connects.buy') }}">
+                        @csrf
+                        <input type="hidden" name="amount" value="120">
+                        <input type="hidden" name="user_id" value="{{ $user_id }}">
+                        <input type="hidden" name="trans_type" value="connects">
+                        <button type="submit" class="btn buy-btn">
+                            Buy
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+
+
+            <div class="d-flex justify-content-center">
+                <div class="plan-card card best-plan" style="width: 250px; height: 350px;">
+                    <div class="card-body d-flex flex-column justify-content-center">
+                        <div class="coins-container mb-2">
+                            @foreach ([1,2,3] as $post)
+                            <i class="fal fa-coins me-1"></i>
+                            @endforeach
+                        </div>
+                        <p class="connects-count">140 Connects
+                        </p>
+                        <p class="text-center text-muted">Get 135 connects and 5 as a gift</p>
+                        <p class="price">200<i class="fal fa-pound-sign ms-1"></i></p>
+                    </div>
+                    <form method="POST" action="{{ route('connects.buy') }}">
+                        @csrf
+                        <input type="hidden" name="amount" value="200">
+                        <input type="hidden" name="user_id" value="{{ $user_id }}">
+                        <input type="hidden" name="trans_type" value="connects">
+                        <button type="submit" class="btn buy-btn">
+                            Buy
+                        </button>
+                    </form>
+                </div>
+            </div>
+
 
         </div>
     </div>
