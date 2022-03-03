@@ -53,6 +53,9 @@ class PaymentController extends Controller
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails()) {
+            EDeleiveryFailure::created([
+                'failure' => "there is failure in payment for task",
+            ]);
             $errors = $validator->errors()->all();
             $json = json_encode($errors);
             EDeleiveryFailure::created([
@@ -63,6 +66,9 @@ class PaymentController extends Controller
         if ($request['cart_id'] != $this->DEFAULT_CART_ID) {
             $task_id = +explode('-', $request['cart_id'])[0];
             $trans_type = explode('-', $request['cart_id'])[1];
+            EDeleiveryFailure::created([
+                'failure' => "not fail task_id=" . $task_id . ", trasn_type=" . $trans_type,
+            ]);
         } else {
             $task_id = null;
             $trans_type = 'connects';
