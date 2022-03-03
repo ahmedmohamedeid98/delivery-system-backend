@@ -79,7 +79,7 @@
         </div>
         <div class="col-10 col-md-4">
             <form method="POST" action="{{ route('pay.task') }}">
-                @csrf
+                {{ csrf_field() }}
                 <input type="hidden" name="user_id" value="{{ $from_user_id }}">
                 <input type="hidden" name="task_id" value="{{ $id }}">
                 <div class="card card-height">
