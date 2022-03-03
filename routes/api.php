@@ -117,7 +117,7 @@ Route::middleware('auth:api', 'throttle:60,1')->group(function () {
  */
 Route::post('pay', [PayTabsGatewayController::class, 'index'])->middleware(['auth:api', 'throttle:60,1']);
 Route::post('payment/callback', [PayTabsGatewayController::class, 'callback']);
-
+Route::post('payment/return', [PayTabsGatewayController::class, 'return']);
 
 /**
  * Admin

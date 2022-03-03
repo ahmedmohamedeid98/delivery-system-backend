@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\PaymentEvent;
 use App\Jobs\TriggerNotification;
 use App\Models\Profile;
 use App\Models\Task;
@@ -189,6 +190,11 @@ class PayTabsGatewayController extends Controller
     # code... client ask to refund his money
     # if client B not do the job in the time client A can refund the money
     # after two days
+  }
+
+  public function return(Request $request)
+  {
+    // broadcast(new PaymentEvent())
   }
 }
 
