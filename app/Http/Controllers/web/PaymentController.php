@@ -29,6 +29,7 @@ class PaymentController extends Controller
      */
     public function return(Request $request)
     {
+        $data = $request->all();
         if (isset($data['respStatus'])) {
             return view('payments.response', ['status' => $data['respStatus']]);
         }
