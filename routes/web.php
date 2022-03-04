@@ -1,7 +1,5 @@
 <?php
 
-use App\Http\Controllers\web\BuyConnectsController;
-use App\Http\Controllers\web\PayFroTaskController;
 use App\Http\Controllers\web\PaymentController;
 use Illuminate\Support\Facades\Route;
 

@@ -42,7 +42,7 @@ class ApiSocialAuthController extends Controller
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'google_id' => $data['id'],
-                    // 'photo_url' => $data['photo_url'],
+                    'photo_url' => $data['photo_url'],
                     'password' => 'NULL',
                 ]);
                 $msg = 'Wellcome ' . $newUser->name . ', creating account successfully';
@@ -83,7 +83,7 @@ class ApiSocialAuthController extends Controller
                     'name' => $data['name'],
                     'email' => isset($data['email']) && $data['email'] != null ? $data['email'] : $data['id'] . "@example.com",
                     'facebook_id' => $data['id'],
-                    // 'photo_url' => $data['photo_url'],
+                    'photo_url' => $data['photo_url'],
                     'password' => 'NULL',
                 ]);
                 $msg = 'Wellcome ' . $newUser->name . ', creating account successfully';
