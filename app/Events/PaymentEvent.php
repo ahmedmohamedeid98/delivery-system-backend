@@ -36,7 +36,7 @@ class PaymentEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PrivateChannel('payment' . $this->user_id);
+        return new PresenceChannel('payment' . $this->user_id);
     }
 
     public function broadcastAs()

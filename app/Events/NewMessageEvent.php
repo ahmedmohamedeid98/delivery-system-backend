@@ -10,22 +10,25 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class notifyEvent implements ShouldBroadcast
+class NewMessageEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-
-    public $notification;
-
+    public $from_id;
+    public $to_id;
+    public $last_message;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($notification)
+    public function __construct($from_id, $to_id, $last_message)
     {
-        $this->notification = $notification;
+        $this->from_id = $from_id;
+        $this->to_id = $to_id;
+        $this->last_message = $last_message;
     }
+
     /**
      * Get the channels the event should broadcast on.
      *
@@ -33,11 +36,11 @@ class notifyEvent implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('notification.' . $this->notification->user_id);
+        return new PresenceChannel('new-messages.' . $this->to_id);
     }
 
     public function broadcastAs()
     {
-        return "notification-event";
+        return 'new-messages-event';
     }
 }

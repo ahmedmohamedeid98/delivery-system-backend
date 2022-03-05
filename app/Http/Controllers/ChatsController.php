@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Events\MessageSent;
+use App\Events\NewMessageEvent;
+use App\Http\Resources\MessageResource;
 use App\Http\Resources\UserResource;
 use App\Models\ChatChannel;
 use App\Models\Message;
@@ -11,6 +13,7 @@ use Exception;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 use Pusher\Pusher;
 
 class ChatsController extends Controller
@@ -27,7 +30,16 @@ class ChatsController extends Controller
         $app_id = env('PUSHER_APP_ID');
         if ($user) {
             $pusher = new Pusher($key, $secret, $app_id);
-            return $pusher->socketAuth($channel_name, $socket_id);
+            // Auth to Private Channel
+            // return $pusher->socketAuth($channel_name, $socket_id);
+            // Auth to Presence Channel (Track User)
+            $presenceData = ['id' => $user->id, 'name' => $user->name];
+            return $pusher->presenceAuth(
+                $channel_name,
+                $socket_id,
+                $user->id,
+                $presenceData
+            );
         }
     }
     /**
@@ -40,7 +52,15 @@ class ChatsController extends Controller
         $user_id = Auth::user()->id;
         $reciver_id = $request->query('id');
         $channelId = $this->getChatChannelId($user_id, $reciver_id);
-        return Message::where('channel_id', $channelId)->get();
+        $messages = Message::where('channel_id', $channelId)->get();
+        $messagesCount = count($messages);
+        if ($messagesCount > 0) {
+            $lastMessage = $messages[$messagesCount - 1];
+            if ($lastMessage->reciver_id == $user_id) {
+                $this->seenMessagesWhenEnter($channelId);
+            }
+        }
+        return $messages;
     }
 
     /**
@@ -54,15 +74,18 @@ class ChatsController extends Controller
         $reciver_id = $request->input('reciver_id');
         $user_id = $request->input('sender_id');
         $channel_id = $request->input('channel_id');
+        $seen = $request->input('seen');
         $user_id = Auth::user()->id;
+        $message = $request->input('message');
 
         Message::create([
             'sender_id' => $user_id,
             'reciver_id' => $reciver_id,
-            'message' => $request->input('message'),
+            'message' => $message,
+            'seen' => $seen,
             'channel_id' => $channel_id
         ]);
-        // broadcast(new MessageSent($message, $channelId))->toOthers();
+        // broadcast(new NewMessageEvent($user_id, $reciver_id, $message))->toOthers();
     }
 
 
@@ -102,12 +125,36 @@ class ChatsController extends Controller
         $details = [];
         foreach ($channels as $channel) {
             $messages = Message::where('channel_id', $channel->id)->get();
-            if ($messages && count($messages) > 0) {
+            $messagesCount = count($messages);
+            if ($messages && $messagesCount > 0) {
                 $chat_with_id = $user->id == $channel->user1_id ? $channel->user2_id : $channel->user1_id;
                 $chat_with = User::find($chat_with_id);
-                array_push($details, ['chat_with' => new UserResource($chat_with), 'on_channel_id' => $channel->id]);
+                $lastMessage = $messages[$messagesCount - 1];
+                $unseen_count = count(array_filter(MessageResource::collection($messages)->response()->getData()->data, function ($msg) {
+                    return $msg->seen == 0;
+                }));
+                array_push($details, ['chat_with' => new UserResource($chat_with), 'on_channel_id' => $channel->id, 'last_message' => $lastMessage->message, 'send_by_id' => $lastMessage->sender_id, 'unseen_count' => $unseen_count]);
             }
         }
         return $this->success('success', ['me' => new UserResource($user), "channels" => $details]);
+    }
+
+
+    public function seenMessagesWhenEnter($channel_id)
+    {
+        if ($channel_id && is_numeric($channel_id)) {
+            Message::where('channel_id', $channel_id)->update(['seen' => true]);
+        }
+    }
+
+    public function seenMessagesWhenLeave(Request $request)
+    {
+        $channel_id = $request->query('$channel_id');
+        if ($channel_id && is_numeric($channel_id)) {
+            Message::where('channel_id', $channel_id)->update(['seen' => true]);
+            return $this->success('success');
+        } else {
+            return $this->failure(['invalid channel id']);
+        }
     }
 }

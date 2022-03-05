@@ -104,6 +104,7 @@ Route::middleware('auth:api', 'throttle:60,1')->group(function () {
  */
 Route::middleware('auth:api', 'throttle:60,1')->group(function () {
     Route::get('messages', [ChatsController::class, 'fetchMessages']);
+    Route::get('messages/seen', [ChatsController::class, 'seenMessagesWhenLeave']);
     Route::post('messages', [ChatsController::class, 'sendMessage']);
     Route::post('pusher/auth', [ChatsController::class, 'authPusher']);
     Route::get('channel{id?}', [ChatsController::class, 'getChannelDetails']);

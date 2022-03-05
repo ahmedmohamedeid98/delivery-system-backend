@@ -3,6 +3,7 @@
 namespace App\Events;
 
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
@@ -40,7 +41,7 @@ class TaskEvent implements ShouldBroadcast
         } else {
             $channel = 'tasks.' . $this->targetLocation->state;
         }
-        return new PrivateChannel(str_replace(' ', '_', $channel));
+        return new PresenceChannel(str_replace(' ', '_', $channel));
     }
 
     public function broadcastAs()

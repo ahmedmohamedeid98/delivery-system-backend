@@ -14,6 +14,7 @@ class Message extends Model
         'reciver_id',
         'message',
         'channel_id',
+        'seen'
     ];
 
     public function user()
