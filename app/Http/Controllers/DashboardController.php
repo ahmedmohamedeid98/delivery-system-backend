@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\FeedbackRequest;
 use App\Http\Resources\MyTaskResource;
+use App\Jobs\TriggerNotification;
 use App\Models\Feedback;
 use App\Models\Profile;
 use App\Models\Task;
@@ -102,6 +103,13 @@ class DashboardController extends Controller
 
             if ($updateProfile) {
                 DB::commit();
+                $reciver_id = +$data['reciver_id'];
+                $reciver_user = User::find($reciver_id);
+                $sender_user = User::find($sender_id);
+                $sender_message = "Your feedback send successfully to " . $reciver_user->name;
+                $reciver_message = "Reciving new feedback from " . $sender_user->name;
+                $this->dispatch(new TriggerNotification($sender_message, $sender_id));
+                $this->dispatch(new TriggerNotification($reciver_message, $reciver_id));
                 return $this->success('feedback added successfully!', $feedback);
             } else {
                 return $this->failure(['faild to add feedback please try again!']);
