@@ -28,7 +28,7 @@ class PayTabsGatewayController extends Controller
     $data = $request->all();
     $rules = [
       'trans_type' => 'required|string|in:connects,order,service,both,refund',
-      'amount' => 'required|integer|in:50,120,200',
+      'amount' => 'required|integer',
     ];
 
     if (isset($data['trans_type']) && $data['trans_type'] != 'connects') {
