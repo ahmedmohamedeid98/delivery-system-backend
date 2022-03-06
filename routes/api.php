@@ -79,6 +79,7 @@ Route::middleware('auth:api', 'throttle:60,1')->group(function () {
     Route::post('location/target', [LocationController::class, 'createTargetLocation']);
     Route::post('location/delivery', [LocationController::class, 'createDeliveryLocation']);
     Route::get('viewTask{id?}', [DashboardController::class, 'getTask']);
+    Route::get('getPerson{id?}', [TaskController::class, 'getPerson']);
     Route::post('completeTask{id?}', [DashboardController::class, 'completeTask']);
 });
 

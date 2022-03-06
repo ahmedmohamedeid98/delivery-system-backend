@@ -9,6 +9,7 @@ use App\Models\DeliveryLocation;
 use App\Models\Profile;
 use App\Models\TargetLocation;
 use App\Models\Task;
+use App\Models\User;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -184,6 +185,24 @@ class TaskController extends Controller
             return $this->success('task updated successfully!');
         } else {
             return $this->failure(['something want wrong']);
+        }
+    }
+
+    public function getPerson(Request $request){
+        $task_id = $request->query('id');
+        if (!$task_id || !Task::find($task_id)) {
+            return $this->failure(['invalid task id']);
+        }
+        try {
+            $task = Task::with('user')->where('id', $task_id)->first();
+            $user=User::with('offer')->where('id' , $task->offers[0]->user_id)->first();
+            $owner =$task->user->name;
+            $applier = $user->name;
+
+            $data = ['owner '=>$owner ,' applier '=> $applier];
+            return $this->success('get Owner and Applier Of that task successfully',$data);
+        } catch (Exception $ex) {
+            return $this->failure([$ex->getMessage()]);
         }
     }
 }

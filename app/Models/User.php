@@ -81,4 +81,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Message::class);
     }
+
+    public function offer()
+    {
+        return $this->hasMany(UserRequestTask::class);
+    }
 }

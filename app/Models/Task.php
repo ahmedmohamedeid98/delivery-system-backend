@@ -34,6 +34,10 @@ class Task extends Model
     {
         return $this->hasMany(UserRequestTask::class);
     }
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
+
 
     protected $fillable = [
         'title',
