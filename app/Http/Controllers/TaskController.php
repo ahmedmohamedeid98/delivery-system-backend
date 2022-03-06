@@ -199,7 +199,7 @@ class TaskController extends Controller
             $owner =$task->user->name;
             $applier = $user->name;
 
-            $data = ['owner '=>$owner ,' applier '=> $applier];
+            $data = [['owner '=>$owner ,' applier '=> $applier]];
             return $this->success('get Owner and Applier Of that task successfully',$data);
         } catch (Exception $ex) {
             return $this->failure([$ex->getMessage()]);
